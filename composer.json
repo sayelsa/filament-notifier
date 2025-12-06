@@ -26,7 +26,7 @@
     "require": {
         "php": "^8.3",
         "spatie/laravel-package-tools": "^1.19",
-        "filament/filament": "^3.2",
+        "filament/filament": "^4.0",
         "symfony/mailer": "^7.2",
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/contracts": "*",
