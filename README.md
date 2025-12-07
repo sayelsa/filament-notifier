@@ -172,6 +172,144 @@ class CustomChannelDriver implements ChannelDriverInterface
 }
 ```
 
+### User Preferences API
+
+The package provides a simple REST API for users to manage their notification preferences. All endpoints require authentication and respect the `allow_override` setting configured in the admin panel.
+
+#### Get All User Preferences
+
+```http
+GET /api/notifier/preferences
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "event_key": "user.registered",
+      "event_name": "User Registered",
+      "event_group": "User",
+      "description": "Sent when a new user registers",
+      "channels": {
+        "email": true,
+        "sms": false,
+        "push": true
+      }
+    }
+  ]
+}
+```
+
+#### Get Available Events and Channels
+
+```http
+GET /api/notifier/preferences/available
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "events": [
+      {
+        "key": "user.registered",
+        "name": "User Registered",
+        "group": "User",
+        "description": "Sent when a new user registers",
+        "default_channels": ["email"]
+      }
+    ],
+    "channels": [
+      {
+        "type": "email",
+        "title": "Email",
+        "icon": "heroicon-o-envelope"
+      },
+      {
+        "type": "sms",
+        "title": "SMS",
+        "icon": "heroicon-o-device-phone-mobile"
+      }
+    ]
+  }
+}
+```
+
+#### Get Preference for Specific Event
+
+```http
+GET /api/notifier/preferences/{eventKey}
+Authorization: Bearer {token}
+```
+
+**Example:**
+```http
+GET /api/notifier/preferences/user.registered
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "event_key": "user.registered",
+    "event_name": "User Registered",
+    "event_group": "User",
+    "description": "Sent when a new user registers",
+    "channels": {
+      "email": true,
+      "sms": false
+    }
+  }
+}
+```
+
+#### Update Preference for Event
+
+```http
+PUT /api/notifier/preferences/{eventKey}
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "channels": {
+    "email": true,
+    "sms": true,
+    "push": false
+  },
+  "settings": {}
+}
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "event_key": "user.registered",
+    "event_name": "User Registered",
+    "channels": {
+      "email": true,
+      "sms": true,
+      "push": false
+    }
+  },
+  "message": "Preferences updated successfully."
+}
+```
+
+**Error Responses:**
+
+- `403 Forbidden` - User preference override is disabled by administrator
+- `422 Unprocessable Entity` - Invalid channel type or validation error
+- `404 Not Found` - Event not found or inactive
+
+**Note:** The API will return a `403` error if the admin has disabled `allow_override` in the notification settings.
+
 ## Configuration
 
 ### Channel Configuration

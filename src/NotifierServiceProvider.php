@@ -3,10 +3,12 @@
 namespace Usamamuneerchaudhary\Notifier;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Usamamuneerchaudhary\Notifier\Commands\NotifierInstallCommand;
 use Usamamuneerchaudhary\Notifier\Commands\SendTestNotificationCommand;
+use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceController;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
@@ -51,6 +53,20 @@ class NotifierServiceProvider extends PackageServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'notifier');
 
         $this->registerChannelsFromDatabase();
+        $this->registerApiRoutes();
+    }
+
+    /**
+     * Register API routes for user preferences
+     */
+    protected function registerApiRoutes(): void
+    {
+        Route::middleware(['api', 'auth'])->prefix('api/notifier/preferences')->group(function () {
+            Route::get('/', [NotificationPreferenceController::class, 'index']);
+            Route::get('/available', [NotificationPreferenceController::class, 'available']);
+            Route::get('/{eventKey}', [NotificationPreferenceController::class, 'show']);
+            Route::put('/{eventKey}', [NotificationPreferenceController::class, 'update']);
+        });
     }
 
     protected function registerChannelsFromDatabase(): void
