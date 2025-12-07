@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Usamamuneerchaudhary\Notifier\Commands\CleanupAnalyticsCommand;
 use Usamamuneerchaudhary\Notifier\Commands\NotifierInstallCommand;
 use Usamamuneerchaudhary\Notifier\Commands\SendTestNotificationCommand;
 use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceController;
+use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationTrackingController;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
@@ -30,6 +32,7 @@ class NotifierServiceProvider extends PackageServiceProvider
             ->hasCommands([
                 NotifierInstallCommand::class,
                 SendTestNotificationCommand::class,
+                CleanupAnalyticsCommand::class,
             ]);
     }
 
@@ -54,6 +57,7 @@ class NotifierServiceProvider extends PackageServiceProvider
 
         $this->registerChannelsFromDatabase();
         $this->registerApiRoutes();
+        $this->registerTrackingRoutes();
     }
 
     /**
@@ -66,6 +70,17 @@ class NotifierServiceProvider extends PackageServiceProvider
             Route::get('/available', [NotificationPreferenceController::class, 'available']);
             Route::get('/{eventKey}', [NotificationPreferenceController::class, 'show']);
             Route::put('/{eventKey}', [NotificationPreferenceController::class, 'update']);
+        });
+    }
+
+    /**
+     * Register tracking routes for analytics ---- public routes
+     */
+    protected function registerTrackingRoutes(): void
+    {
+        Route::prefix('notifier/track')->group(function () {
+            Route::get('/open/{token}', [NotificationTrackingController::class, 'trackOpen']);
+            Route::get('/click/{token}', [NotificationTrackingController::class, 'trackClick']);
         });
     }
 

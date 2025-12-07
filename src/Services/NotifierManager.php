@@ -3,6 +3,7 @@ namespace Usamamuneerchaudhary\Notifier\Services;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Str;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
@@ -10,6 +11,7 @@ use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
+use Usamamuneerchaudhary\Notifier\Services\RateLimitingService;
 
 class NotifierManager
 {
@@ -48,7 +50,10 @@ class NotifierManager
                     continue;
                 }
 
-                $this->createNotification($user, $template, $channelType, $data, $eventKey);
+                $notification = $this->createNotification($user, $template, $channelType, $data, $eventKey);
+                if (!$notification) {
+                    continue;
+                }
             }
         } catch (\Exception $e) {
             Log::error("Failed to send notification for event {$eventKey}: " . $e->getMessage());
@@ -84,7 +89,10 @@ class NotifierManager
                 return;
             }
 
-            $this->createNotification($user, $template, $channelType, $data, $eventKey);
+            $notification = $this->createNotification($user, $template, $channelType, $data, $eventKey);
+            if (!$notification) {
+                return;
+            }
         } catch (\Exception $e) {
             Log::error("Failed to send notification to channel {$channelType} for event {$eventKey}: " . $e->getMessage());
         }
@@ -101,8 +109,11 @@ class NotifierManager
 
         foreach ($eventConfig['channels'] ?? [] as $channelType) {
             $notification = $this->createNotification($user, $template, $channelType, $data, $eventKey);
-            $notification->update(['scheduled_at' => $scheduledAt]);
+            if (!$notification) {
+                continue;
+            }
 
+            $notification->update(['scheduled_at' => $scheduledAt]);
             Queue::later($scheduledAt, new SendNotificationJob($notification->id));
         }
     }
@@ -189,11 +200,25 @@ class NotifierManager
         return true;
     }
 
-    protected function createNotification($user, NotificationTemplate $template, string $channelType, array $data, string $eventKey): Notification
+    protected function createNotification($user, NotificationTemplate $template, string $channelType, array $data, string $eventKey): ?Notification
     {
-        $dataWithUser = array_merge($data, ['user' => $user]);
+        $rateLimitingService = app(RateLimitingService::class);
+        if (!$rateLimitingService->canSend()) {
+            Log::warning("Notification creation blocked due to rate limit", [
+                'user_id' => $user->id ?? null,
+                'event_key' => $eventKey,
+                'channel' => $channelType,
+            ]);
+            return null;
+        }
 
-        $renderedContent = $this->renderTemplate($template, $dataWithUser);
+        // Generate tracking token for analytics
+        $trackingToken = Str::random(32);
+        $dataWithUser = array_merge($data, ['user' => $user, 'tracking_token' => $trackingToken]);
+
+        $renderedContent = $this->renderTemplate($template, $dataWithUser, $channelType);
+
+        $notificationData = array_merge($data, ['tracking_token' => $trackingToken]);
 
         $notification = Notification::create([
             'notification_template_id' => $template->id,
@@ -201,16 +226,24 @@ class NotifierManager
             'channel' => $channelType,
             'subject' => $renderedContent['subject'] ?? '',
             'content' => $renderedContent['content'] ?? '',
-            'data' => $data,
+            'data' => $notificationData,
             'status' => 'pending',
         ]);
+
+        \Illuminate\Support\Facades\Cache::put(
+            "notifier:tracking_token:{$trackingToken}",
+            $notification->id,
+            now()->addDays(30)
+        );
+
+        $rateLimitingService->increment();
 
         Queue::push(new SendNotificationJob($notification->id));
 
         return $notification;
     }
 
-    protected function renderTemplate(NotificationTemplate $template, array $data): array
+    protected function renderTemplate(NotificationTemplate $template, array $data, string $channelType = 'email'): array
     {
         $subject = $template->subject ?? '';
         $content = $template->content ?? '';
@@ -257,10 +290,48 @@ class NotifierManager
             }
         }
 
+        // Apply analytics tracking if enabled and for email channel
+        if ($channelType === 'email' && isset($data['tracking_token'])) {
+            $analytics = NotificationSetting::getAnalytics();
+
+            if ($analytics['enabled'] ?? config('notifier.settings.analytics.enabled', true)) {
+                // Rewrite URLs for click tracking
+                if ($analytics['track_clicks'] ?? config('notifier.settings.analytics.track_clicks', true)) {
+                    $content = $this->rewriteUrlsForTracking($content, $data['tracking_token']);
+                }
+            }
+        }
+
         return [
             'subject' => $subject,
             'content' => $content,
         ];
+    }
+
+    /**
+     * Rewrite URLs in content for click tracking
+     */
+    protected function rewriteUrlsForTracking(string $content, string $token): string
+    {
+        $appUrl = rtrim(config('app.url', ''), '/');
+        $trackingUrl = "{$appUrl}/notifier/track/click/{$token}";
+
+        $pattern = '/href=["\']([^"\']+)["\']/i';
+
+        return preg_replace_callback($pattern, function ($matches) use ($trackingUrl) {
+            $originalUrl = $matches[1];
+
+            if (str_contains($originalUrl, '/notifier/track/') ||
+                str_starts_with($originalUrl, 'mailto:') ||
+                str_starts_with($originalUrl, 'tel:')) {
+                return $matches[0];
+            }
+
+            $encodedUrl = urlencode($originalUrl);
+            $newUrl = "{$trackingUrl}?url={$encodedUrl}";
+
+            return 'href="' . htmlspecialchars($newUrl, ENT_QUOTES, 'UTF-8') . '"';
+        }, $content);
     }
 
     public function getRegisteredChannels(): array
