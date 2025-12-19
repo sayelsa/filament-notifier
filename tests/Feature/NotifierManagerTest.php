@@ -151,6 +151,83 @@ class NotifierManagerTest extends TestCase
         $this->assertContains('custom.event', $this->manager->getRegisteredEvents());
     }
 
+    public function test_it_generates_tracking_token_for_notifications()
+    {
+        Queue::fake();
+
+        $user = $this->createUser();
+        $channel = $this->createChannel('email');
+        $event = $this->createEvent('user.registered');
+        $template = $this->createTemplate('welcome-email', $event->key);
+
+        $this->manager->send($user, 'user.registered', [
+            'name' => 'John Doe',
+        ]);
+
+        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        
+        $this->assertNotNull($notification->data['tracking_token']);
+        $this->assertEquals(32, strlen($notification->data['tracking_token']));
+    }
+
+    public function test_it_rewrites_urls_for_click_tracking()
+    {
+        Queue::fake();
+
+        \Usamamuneerchaudhary\Notifier\Models\NotificationSetting::set('analytics', [
+            'enabled' => true,
+            'track_clicks' => true,
+        ], 'analytics');
+
+        $user = $this->createUser();
+        $channel = $this->createChannel('email');
+        $event = $this->createEvent('user.registered');
+        
+        $template = NotificationTemplate::create([
+            'name' => 'test-template',
+            'event_key' => $event->key,
+            'subject' => 'Test',
+            'content' => 'Visit <a href="https://example.com">our website</a> for more info.',
+        ]);
+
+        $this->manager->send($user, 'user.registered', []);
+
+        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        $token = $notification->data['tracking_token'];
+        $appUrl = rtrim(config('app.url', ''), '/');
+        
+        $this->assertStringContainsString("/notifier/track/click/{$token}", $notification->content);
+        $this->assertStringContainsString('url=', $notification->content);
+    }
+
+    public function test_it_does_not_rewrite_urls_when_track_clicks_disabled()
+    {
+        Queue::fake();
+
+        \Usamamuneerchaudhary\Notifier\Models\NotificationSetting::set('analytics', [
+            'enabled' => true,
+            'track_clicks' => false,
+        ], 'analytics');
+
+        $user = $this->createUser();
+        $channel = $this->createChannel('email');
+        $event = $this->createEvent('user.registered');
+        
+        $template = NotificationTemplate::create([
+            'name' => 'test-template',
+            'event_key' => $event->key,
+            'subject' => 'Test',
+            'content' => 'Visit <a href="https://example.com">our website</a> for more info.',
+        ]);
+
+        $this->manager->send($user, 'user.registered', []);
+
+        $notification = \Usamamuneerchaudhary\Notifier\Models\Notification::first();
+        
+        $this->assertStringNotContainsString('/notifier/track/click/', $notification->content);
+        $this->assertStringContainsString('https://example.com', $notification->content);
+    }
+
     private function createUser()
     {
         return new class {
