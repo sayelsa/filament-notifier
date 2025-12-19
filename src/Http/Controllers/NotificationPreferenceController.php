@@ -3,7 +3,6 @@
 namespace Usamamuneerchaudhary\Notifier\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Usamamuneerchaudhary\Notifier\Http\Requests\UpdatePreferenceRequest;
@@ -11,6 +10,7 @@ use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
 class NotificationPreferenceController extends Controller
 {
@@ -28,7 +28,7 @@ class NotificationPreferenceController extends Controller
                 ->where('notification_event_id', $event->id)
                 ->first();
 
-            $channels = $this->getChannelsForEvent($event, $preference);
+            $channels = PreferenceService::getChannelsForEvent($event, $preference);
 
             $preferences[] = [
                 'event_key' => $event->key,
@@ -93,7 +93,8 @@ class NotificationPreferenceController extends Controller
             ->where('notification_event_id', $event->id)
             ->first();
 
-        $channels = $this->getChannelsForEvent($event, $preference);
+
+        $channels = PreferenceService::getChannelsForEvent($event, $preference);
 
         return response()->json([
             'data' => [
@@ -157,40 +158,6 @@ class NotificationPreferenceController extends Controller
         ]);
     }
 
-    /**
-     * Get channels configuration for an event
-     */
-    protected function getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
-    {
-        if ($preference && isset($preference->channels)) {
-            return $preference->channels;
-        }
-
-        $defaultChannels = NotificationSetting::get('preferences.default_channels', config('notifier.settings.preferences.default_channels', ['email']));
-        $channels = [];
-
-        foreach ($defaultChannels as $channel) {
-            $channels[$channel] = true;
-        }
-
-        if (isset($event->settings['channels']) && is_array($event->settings['channels'])) {
-            foreach ($event->settings['channels'] as $channel) {
-                $channels[$channel] = true;
-            }
-        }
-
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->pluck('type')
-            ->toArray();
-
-        foreach ($activeChannels as $channelType) {
-            if (!isset($channels[$channelType])) {
-                $channels[$channelType] = false;
-            }
-        }
-
-        return $channels;
-    }
 }
 
 
