@@ -1,9 +1,17 @@
 # Filament Notifier
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://packagist.org/packages/usamamuneerchaudhary/filament-notifier)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/usamamuneerchaudhary/filament-notifier/badge)](https://www.codefactor.io/repository/github/usamamuneerchaudhary/filament-notifier)
+[![Build Status](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/build.png?b=main)](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/build-status/main)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
+[![Total Downloads](https://img.shields.io/packagist/dt/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://packagist.org/packages/usamamuneerchaudhary/filament-notifier)
+[![Licence](https://img.shields.io/packagist/l/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://github.com/usamamuneerchaudhary/filament-notifier/blob/HEAD/LICENSE.md)
+
 A powerful notification system for FilamentPHP that handles multi-channel notifications with template management, scheduling, and real-time delivery. Built for developers who need enterprise-grade notifications without the complexity.
 
 <div align="center">
-  <img src="images/filament notifier.gif" alt="Filament Notifier Banner" width="100%">
+  <img src="public/images/filament notifier.gif" alt="Filament Notifier Banner" width="100%">
 </div>
 
 ## Features
@@ -735,6 +743,53 @@ The package follows Laravel best practices with a clean, service-oriented archit
 - **Facades**: Convenient static access to services (registered in `composer.json`)
 - **Dependency Injection**: Preferred approach for controllers and testable code
 - **Service Container**: All services are registered as singletons for optimal performance
+
+## Screenshots
+
+### Dashboard Overview
+
+<div align="center">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.28.25.png" alt="Dashboard Overview" width="100%">
+</div>
+
+### Analytics & Metrics
+
+<table>
+<tr>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.28.31.png" alt="Analytics Dashboard" width="100%">
+</td>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.28.36.png" alt="Engagement Metrics" width="100%">
+</td>
+</tr>
+</table>
+
+### Notification Management
+
+<table>
+<tr>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.28.51.png" alt="Notification Channels" width="100%">
+</td>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.28.59.png" alt="Notification Events" width="100%">
+</td>
+</tr>
+</table>
+
+### Templates & Settings
+
+<table>
+<tr>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.29.04.png" alt="Notification Templates" width="100%">
+</td>
+<td width="50%">
+  <img src="public/images/screenshots/Screenshot 2025-12-19 at 23.29.12.png" alt="Notification Settings" width="100%">
+</td>
+</tr>
+</table>
 
 ## Support
 
