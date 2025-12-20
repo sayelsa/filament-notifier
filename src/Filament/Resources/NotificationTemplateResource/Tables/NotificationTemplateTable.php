@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Filament\Resources\NotificationTemplateResource\Tables;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Umun\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 
 class NotificationTemplateTable
 {

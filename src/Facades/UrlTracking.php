@@ -1,16 +1,16 @@
 <?php
 
-namespace Umun\Notifier\Facades;
+namespace Usamamuneerchaudhary\Notifier\Facades;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Facade;
-use Umun\Notifier\Services\UrlTrackingService;
+use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
 
 /**
  * @method static RedirectResponse safeRedirect(string $url)
  * @method static string rewriteUrlsForTracking(string $content, string $token)
  *
- * @see \Umun\Notifier\Services\UrlTrackingService
+ * @see \Usamamuneerchaudhary\Notifier\Services\UrlTrackingService
  */
 class UrlTracking extends Facade
 {

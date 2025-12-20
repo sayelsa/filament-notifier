@@ -1,19 +1,19 @@
 <?php
 
-namespace Umun\Notifier\Facades;
+namespace Usamamuneerchaudhary\Notifier\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Umun\Notifier\Services\AnalyticsService;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
 
 /**
  * @method static bool isEnabled()
  * @method static bool isOpenTrackingEnabled()
  * @method static bool isClickTrackingEnabled()
  * @method static string generateTrackingPixel(string $trackingToken)
- * @method static void trackOpen(\Umun\Notifier\Models\Notification $notification)
- * @method static void trackClick(\Umun\Notifier\Models\Notification $notification)
+ * @method static void trackOpen(\Usamamuneerchaudhary\Notifier\Models\Notification $notification)
+ * @method static void trackClick(\Usamamuneerchaudhary\Notifier\Models\Notification $notification)
  *
- * @see \Umun\Notifier\Services\AnalyticsService
+ * @see \Usamamuneerchaudhary\Notifier\Services\AnalyticsService
  */
 class Analytics extends Facade
 {

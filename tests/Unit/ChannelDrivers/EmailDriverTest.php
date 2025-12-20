@@ -1,13 +1,13 @@
 <?php
 
-namespace Umun\Notifier\Tests\Unit\ChannelDrivers;
+namespace Usamamuneerchaudhary\Notifier\Tests\Unit\ChannelDrivers;
 
 use Illuminate\Support\Facades\Mail;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\NotificationSetting;
-use Umun\Notifier\Services\ChannelDrivers\EmailDriver;
-use Umun\Notifier\Tests\TestCase;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\EmailDriver;
+use Usamamuneerchaudhary\Notifier\Tests\TestCase;
 
 class EmailDriverTest extends TestCase
 {

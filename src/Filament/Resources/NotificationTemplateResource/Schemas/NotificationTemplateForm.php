@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Filament\Resources\NotificationTemplateResource\Schemas;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource\Schemas;
 
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Umun\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 
 class NotificationTemplateForm
 {

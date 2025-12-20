@@ -1,15 +1,15 @@
 <?php
 
-namespace Umun\Notifier\Filament\Resources;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources;
 
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Umun\Notifier\Filament\Resources\NotificationEventResource\Pages\CreateNotificationEvent;
-use Umun\Notifier\Filament\Resources\NotificationEventResource\Pages\EditNotificationEvent;
-use Umun\Notifier\Filament\Resources\NotificationEventResource\Pages\ListNotificationEvents;
-use Umun\Notifier\Filament\Resources\NotificationEventResource\Schemas\NotificationEventForm;
-use Umun\Notifier\Filament\Resources\NotificationEventResource\Tables\NotificationEventTable;
-use Umun\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Pages\CreateNotificationEvent;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Pages\EditNotificationEvent;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Pages\ListNotificationEvents;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Schemas\NotificationEventForm;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Tables\NotificationEventTable;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 
 class NotificationEventResource extends Resource
 {

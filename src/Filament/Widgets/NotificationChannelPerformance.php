@@ -1,11 +1,11 @@
 <?php
 
-namespace Umun\Notifier\Filament\Widgets;
+namespace Usamamuneerchaudhary\Notifier\Filament\Widgets;
 
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 
 class NotificationChannelPerformance extends ChartWidget
 {

@@ -1,27 +1,27 @@
 <?php
 
-namespace Umun\Notifier;
+namespace Usamamuneerchaudhary\Notifier;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Umun\Notifier\Commands\CleanupAnalyticsCommand;
-use Umun\Notifier\Commands\NotifierInstallCommand;
-use Umun\Notifier\Commands\SendTestNotificationCommand;
-use Umun\Notifier\Http\Controllers\NotificationPreferenceController;
-use Umun\Notifier\Http\Controllers\NotificationTrackingController;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\NotificationEvent;
-use Umun\Notifier\Models\NotificationPreference;
-use Umun\Notifier\Models\NotificationTemplate;
-use Umun\Notifier\Services\AnalyticsService;
-use Umun\Notifier\Services\ChannelDriverFactory;
-use Umun\Notifier\Services\NotificationRepository;
-use Umun\Notifier\Services\NotifierManager;
-use Umun\Notifier\Services\PreferenceService;
-use Umun\Notifier\Services\UrlTrackingService;
+use Usamamuneerchaudhary\Notifier\Commands\CleanupAnalyticsCommand;
+use Usamamuneerchaudhary\Notifier\Commands\NotifierInstallCommand;
+use Usamamuneerchaudhary\Notifier\Commands\SendTestNotificationCommand;
+use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceController;
+use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationTrackingController;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
+use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDriverFactory;
+use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
+use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
+use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
+use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
 
 class NotifierServiceProvider extends PackageServiceProvider
 {
@@ -102,7 +102,7 @@ class NotifierServiceProvider extends PackageServiceProvider
             }
 
             $notifier = $this->app->make('notifier');
-            $channels = \Umun\Notifier\Models\NotificationChannel::where('is_active', true)->get();
+            $channels = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('is_active', true)->get();
 
             $driverFactory = new ChannelDriverFactory();
             foreach ($channels as $channel) {

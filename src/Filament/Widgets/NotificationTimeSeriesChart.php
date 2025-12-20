@@ -1,10 +1,10 @@
 <?php
 
-namespace Umun\Notifier\Filament\Widgets;
+namespace Usamamuneerchaudhary\Notifier\Filament\Widgets;
 
 use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
-use Umun\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class NotificationTimeSeriesChart extends ChartWidget
 {

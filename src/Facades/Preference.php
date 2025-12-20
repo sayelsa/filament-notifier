@@ -1,16 +1,16 @@
 <?php
 
-namespace Umun\Notifier\Facades;
+namespace Usamamuneerchaudhary\Notifier\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Umun\Notifier\Services\PreferenceService;
+use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
 /**
  * @method static array getUserPreferences($user, string $eventKey)
- * @method static array getChannelsForEvent(\Umun\Notifier\Models\NotificationEvent $event, ?\Umun\Notifier\Models\NotificationPreference $preference)
+ * @method static array getChannelsForEvent(\Usamamuneerchaudhary\Notifier\Models\NotificationEvent $event, ?\Usamamuneerchaudhary\Notifier\Models\NotificationPreference $preference)
  * @method static bool shouldSendToChannel($user, string $channelType, array $preferences)
  *
- * @see \Umun\Notifier\Services\PreferenceService
+ * @see \Usamamuneerchaudhary\Notifier\Services\PreferenceService
  */
 class Preference extends Facade
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Umun\Notifier\Tests\Feature;
+namespace Usamamuneerchaudhary\Notifier\Tests\Feature;
 
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Tests\TestCase;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Tests\TestCase;
 
 class NotificationChannelTest extends TestCase
 {

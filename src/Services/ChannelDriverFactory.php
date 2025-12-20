@@ -1,13 +1,13 @@
 <?php
 
-namespace Umun\Notifier\Services;
+namespace Usamamuneerchaudhary\Notifier\Services;
 
-use Umun\Notifier\Services\ChannelDrivers\ChannelDriverInterface;
-use Umun\Notifier\Services\ChannelDrivers\DiscordDriver;
-use Umun\Notifier\Services\ChannelDrivers\EmailDriver;
-use Umun\Notifier\Services\ChannelDrivers\PushDriver;
-use Umun\Notifier\Services\ChannelDrivers\SlackDriver;
-use Umun\Notifier\Services\ChannelDrivers\SmsDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\ChannelDriverInterface;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\DiscordDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\EmailDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\PushDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\SlackDriver;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\SmsDriver;
 
 class ChannelDriverFactory
 {

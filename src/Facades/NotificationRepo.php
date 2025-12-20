@@ -1,14 +1,14 @@
 <?php
 
-namespace Umun\Notifier\Facades;
+namespace Usamamuneerchaudhary\Notifier\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Umun\Notifier\Services\NotificationRepository;
+use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
 
 /**
- * @method \Umun\Notifier\Models\Notification|null findByToken(string $token)
+ * @method \Usamamuneerchaudhary\Notifier\Models\Notification|null findByToken(string $token)
  *
- * @see \Umun\Notifier\Services\NotificationRepository
+ * @see \Usamamuneerchaudhary\Notifier\Services\NotificationRepository
  */
 class NotificationRepo extends Facade
 {

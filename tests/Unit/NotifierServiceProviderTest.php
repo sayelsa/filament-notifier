@@ -1,9 +1,9 @@
 <?php
 
-namespace Umun\Notifier\Tests\Unit;
+namespace Usamamuneerchaudhary\Notifier\Tests\Unit;
 
-use Umun\Notifier\NotifierServiceProvider;
-use Umun\Notifier\Tests\TestCase;
+use Usamamuneerchaudhary\Notifier\NotifierServiceProvider;
+use Usamamuneerchaudhary\Notifier\Tests\TestCase;
 
 class NotifierServiceProviderTest extends TestCase
 {
@@ -12,7 +12,7 @@ class NotifierServiceProviderTest extends TestCase
     {
         $this->assertTrue($this->app->bound('notifier'));
         $this->assertInstanceOf(
-            \Umun\Notifier\Services\NotifierManager::class,
+            \Usamamuneerchaudhary\Notifier\Services\NotifierManager::class,
             $this->app->make('notifier')
         );
     }

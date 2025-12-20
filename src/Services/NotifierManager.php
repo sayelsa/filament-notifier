@@ -1,15 +1,15 @@
 <?php
-namespace Umun\Notifier\Services;
+namespace Usamamuneerchaudhary\Notifier\Services;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\NotificationEvent;
-use Umun\Notifier\Models\NotificationTemplate;
-use Umun\Notifier\Jobs\SendNotificationJob;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
+use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
 
 class NotifierManager
 {

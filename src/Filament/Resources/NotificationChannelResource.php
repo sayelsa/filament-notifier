@@ -1,15 +1,15 @@
 <?php
 
-namespace Umun\Notifier\Filament\Resources;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources;
 
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource\Pages\CreateNotificationChannel;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource\Pages\EditNotificationChannel;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource\Pages\ListNotificationChannels;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource\Schemas\NotificationChannelForm;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource\Tables\NotificationChannelTable;
-use Umun\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Pages\CreateNotificationChannel;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Pages\EditNotificationChannel;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Pages\ListNotificationChannels;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Schemas\NotificationChannelForm;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Tables\NotificationChannelTable;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 
 class NotificationChannelResource extends Resource
 {

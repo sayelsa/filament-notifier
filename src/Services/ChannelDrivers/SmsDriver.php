@@ -1,16 +1,16 @@
 <?php
 
-namespace Umun\Notifier\Services\ChannelDrivers;
+namespace Usamamuneerchaudhary\Notifier\Services\ChannelDrivers;
 
 use Illuminate\Support\Facades\Http;
-use Umun\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class SmsDriver implements ChannelDriverInterface
 {
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Umun\Notifier\Models\NotificationChannel::where('type', 'sms')->first();
+            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'sms')->first();
 
             if (!$channel) {
                 return false;

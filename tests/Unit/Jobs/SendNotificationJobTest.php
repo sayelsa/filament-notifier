@@ -1,11 +1,11 @@
 <?php
 
-namespace Umun\Notifier\Tests\Unit\Jobs;
+namespace Usamamuneerchaudhary\Notifier\Tests\Unit\Jobs;
 
 use Illuminate\Support\Facades\Queue;
-use Umun\Notifier\Jobs\SendNotificationJob;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Tests\TestCase;
+use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Tests\TestCase;
 
 class SendNotificationJobTest extends TestCase
 {

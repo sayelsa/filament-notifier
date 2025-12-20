@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Umun\Notifier\Models;
+namespace Usamamuneerchaudhary\Notifier\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

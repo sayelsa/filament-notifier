@@ -1,11 +1,11 @@
 <?php
 
-namespace Umun\Notifier\Commands;
+namespace Usamamuneerchaudhary\Notifier\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 
 class CleanupAnalyticsCommand extends Command
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Filament\Resources\NotificationEventResource\Schemas;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource\Schemas;
 
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Textarea;

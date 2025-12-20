@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Http\Requests;
+namespace Usamamuneerchaudhary\Notifier\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

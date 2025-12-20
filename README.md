@@ -1,12 +1,12 @@
 # Filament Notifier
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/umun/filament-notifier?style=flat-square)](https://packagist.org/packages/umun/filament-notifier)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/umun/filament-notifier/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/umun/filament-notifier/?branch=main)
-[![CodeFactor](https://www.codefactor.io/repository/github/umun/filament-notifier/badge)](https://www.codefactor.io/repository/github/umun/filament-notifier)
-[![Build Status](https://scrutinizer-ci.com/g/umun/filament-notifier/badges/build.png?b=main)](https://scrutinizer-ci.com/g/umun/filament-notifier/build-status/main)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/umun/filament-notifier/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
-[![Total Downloads](https://img.shields.io/packagist/dt/umun/filament-notifier?style=flat-square)](https://packagist.org/packages/umun/filament-notifier)
-[![Licence](https://img.shields.io/packagist/l/umun/filament-notifier?style=flat-square)](https://github.com/umun/filament-notifier/blob/HEAD/LICENSE.md)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://packagist.org/packages/usamamuneerchaudhary/filament-notifier)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/?branch=main)
+[![CodeFactor](https://www.codefactor.io/repository/github/usamamuneerchaudhary/filament-notifier/badge)](https://www.codefactor.io/repository/github/usamamuneerchaudhary/filament-notifier)
+[![Build Status](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/build.png?b=main)](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/build-status/main)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/usamamuneerchaudhary/filament-notifier/badges/code-intelligence.svg?b=main)](https://scrutinizer-ci.com/code-intelligence)
+[![Total Downloads](https://img.shields.io/packagist/dt/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://packagist.org/packages/usamamuneerchaudhary/filament-notifier)
+[![Licence](https://img.shields.io/packagist/l/usamamuneerchaudhary/filament-notifier?style=flat-square)](https://github.com/usamamuneerchaudhary/filament-notifier/blob/HEAD/LICENSE.md)
 
 A powerful notification system for FilamentPHP that handles multi-channel notifications with template management, scheduling, and real-time delivery. Built for developers who need enterprise-grade notifications without the complexity.
 
@@ -32,7 +32,7 @@ A powerful notification system for FilamentPHP that handles multi-channel notifi
 ### 1. Install the Package
 
 ```bash
-composer require umun/filament-notifier
+composer require usamamuneerchaudhary/filament-notifier
 ```
 
 ### 2. Run the Installation Command
@@ -52,7 +52,7 @@ This command will:
 Add the plugin to your Filament panel configuration:
 
 ```php
-use Umun\Notifier\FilamentNotifierPlugin;
+use Usamamuneerchaudhary\Notifier\FilamentNotifierPlugin;
 
 public function panel(Panel $panel): Panel
 {
@@ -103,7 +103,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 ### Basic Notification Sending
 
 ```php
-use Umun\Notifier\Facades\Notifier;
+use Usamamuneerchaudhary\Notifier\Facades\Notifier;
 
 // Send a notification using the facade
 Notifier::send($user, 'user.registered', [
@@ -124,10 +124,10 @@ $notifier->send($user, 'user.registered', [
 The package provides convenient facades for accessing services:
 
 ```php
-use Umun\Notifier\Facades\Preference;
-use Umun\Notifier\Facades\Analytics;
-use Umun\Notifier\Facades\UrlTracking;
-use Umun\Notifier\Facades\NotificationRepo;
+use Usamamuneerchaudhary\Notifier\Facades\Preference;
+use Usamamuneerchaudhary\Notifier\Facades\Analytics;
+use Usamamuneerchaudhary\Notifier\Facades\UrlTracking;
+use Usamamuneerchaudhary\Notifier\Facades\NotificationRepo;
 
 // Get user preferences
 $preferences = Preference::getUserPreferences($user, 'user.registered');
@@ -151,8 +151,8 @@ $notification = NotificationRepo::findByToken($token);
 For better testability, use dependency injection in your controllers and services:
 
 ```php
-use Umun\Notifier\Services\PreferenceService;
-use Umun\Notifier\Services\AnalyticsService;
+use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
 
 class MyController extends Controller
 {
@@ -205,7 +205,7 @@ Register events in your `config/notifier.php`:
 Templates can be created through the Filament admin panel or programmatically:
 
 ```php
-use Umun\Notifier\Models\NotificationTemplate;
+use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 
 NotificationTemplate::create([
     'title' => 'Welcome Email',
@@ -225,8 +225,8 @@ NotificationTemplate::create([
 Create custom channel drivers by implementing the `ChannelDriverInterface`:
 
 ```php
-use Umun\Notifier\Services\ChannelDrivers\ChannelDriverInterface;
-use Umun\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDrivers\ChannelDriverInterface;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class CustomChannelDriver implements ChannelDriverInterface
 {
@@ -585,7 +585,7 @@ The package creates the following database tables with the `notifier_` prefix to
 #### Preference Facade
 
 ```php
-use Umun\Notifier\Facades\Preference;
+use Usamamuneerchaudhary\Notifier\Facades\Preference;
 
 Preference::getUserPreferences($user, string $eventKey): array
 Preference::getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
@@ -595,7 +595,7 @@ Preference::shouldSendToChannel($user, string $channelType, array $preferences):
 #### Analytics Facade
 
 ```php
-use Umun\Notifier\Facades\Analytics;
+use Usamamuneerchaudhary\Notifier\Facades\Analytics;
 
 Analytics::isEnabled(): bool
 Analytics::isOpenTrackingEnabled(): bool
@@ -608,7 +608,7 @@ Analytics::trackClick(Notification $notification): void
 #### UrlTracking Facade
 
 ```php
-use Umun\Notifier\Facades\UrlTracking;
+use Usamamuneerchaudhary\Notifier\Facades\UrlTracking;
 
 UrlTracking::safeRedirect(string $url): RedirectResponse
 UrlTracking::rewriteUrlsForTracking(string $content, string $token): string
@@ -617,7 +617,7 @@ UrlTracking::rewriteUrlsForTracking(string $content, string $token): string
 #### NotificationRepo Facade
 
 ```php
-use Umun\Notifier\Facades\NotificationRepo;
+use Usamamuneerchaudhary\Notifier\Facades\NotificationRepo;
 
 NotificationRepo::findByToken(string $token): ?Notification
 ```

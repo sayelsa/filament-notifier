@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Jobs;
+namespace Usamamuneerchaudhary\Notifier\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -8,8 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Services\ChannelDriverFactory;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Services\ChannelDriverFactory;
 
 class SendNotificationJob implements ShouldQueue
 {

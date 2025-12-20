@@ -1,18 +1,18 @@
 <?php
 
-namespace Umun\Notifier\Services\ChannelDrivers;
+namespace Usamamuneerchaudhary\Notifier\Services\ChannelDrivers;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Umun\Notifier\Models\Notification;
-use Umun\Notifier\Services\AnalyticsService;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
 
 class EmailDriver implements ChannelDriverInterface
 {
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Umun\Notifier\Models\NotificationChannel::where('type', 'email')->first();
+            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'email')->first();
             $user = $notification->user;
 
             if (!$user || !$user->email) {

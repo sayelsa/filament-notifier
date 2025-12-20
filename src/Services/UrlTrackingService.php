@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Services;
+namespace Usamamuneerchaudhary\Notifier\Services;
 
 use Illuminate\Http\RedirectResponse;
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace Umun\Notifier\Tests\Feature;
+namespace Usamamuneerchaudhary\Notifier\Tests\Feature;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\NotificationEvent;
-use Umun\Notifier\Models\NotificationSetting;
-use Umun\Notifier\Models\NotificationTemplate;
-use Umun\Notifier\Services\NotifierManager;
-use Umun\Notifier\Services\RateLimitingService;
-use Umun\Notifier\Tests\TestCase;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
+use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
+use Usamamuneerchaudhary\Notifier\Services\RateLimitingService;
+use Usamamuneerchaudhary\Notifier\Tests\TestCase;
 
 class RateLimitingTest extends TestCase
 {

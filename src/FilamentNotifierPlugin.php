@@ -1,21 +1,21 @@
 <?php
-namespace Umun\Notifier;
+namespace Usamamuneerchaudhary\Notifier;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
-use Umun\Notifier\Filament\Resources\NotificationChannelResource;
-use Umun\Notifier\Filament\Pages\EventChannelConfiguration;
-use Umun\Notifier\Filament\Pages\NotifierDashboard;
-use Umun\Notifier\Filament\Pages\NotificationSettings;
-use Umun\Notifier\Filament\Resources\NotificationEventResource;
-use Umun\Notifier\Filament\Resources\NotificationTemplateResource;
-use Umun\Notifier\Filament\Resources\NotificationResource;
-use Umun\Notifier\Filament\Widgets\NotificationAnalyticsChart;
-use Umun\Notifier\Filament\Widgets\NotificationChannelPerformance;
-use Umun\Notifier\Filament\Widgets\NotificationEngagementStats;
-use Umun\Notifier\Filament\Widgets\NotificationStatsOverview;
-use Umun\Notifier\Filament\Widgets\NotificationTimeSeriesChart;
-use Umun\Notifier\Filament\Widgets\RateLimitingStatusWidget;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource;
+use Usamamuneerchaudhary\Notifier\Filament\Pages\EventChannelConfiguration;
+use Usamamuneerchaudhary\Notifier\Filament\Pages\NotifierDashboard;
+use Usamamuneerchaudhary\Notifier\Filament\Pages\NotificationSettings;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationAnalyticsChart;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationChannelPerformance;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationEngagementStats;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationStatsOverview;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationTimeSeriesChart;
+use Usamamuneerchaudhary\Notifier\Filament\Widgets\RateLimitingStatusWidget;
 
 class FilamentNotifierPlugin implements Plugin
 {

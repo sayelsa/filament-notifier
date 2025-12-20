@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Http\Controllers;
+namespace Usamamuneerchaudhary\LaraClient\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

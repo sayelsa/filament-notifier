@@ -1,7 +1,7 @@
 <?php
-namespace Umun\Notifier\Filament\Resources\NotificationChannelResource\Pages;
+namespace Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource\Pages;
 
-use Umun\Notifier\Filament\Resources\NotificationChannelResource;
+use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

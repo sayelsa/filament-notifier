@@ -1,12 +1,12 @@
 <?php
 
-namespace Umun\Notifier\Filament\Widgets;
+namespace Usamamuneerchaudhary\Notifier\Filament\Widgets;
 
 use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Umun\Notifier\Models\NotificationSetting;
-use Umun\Notifier\Services\RateLimitingService;
+use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\RateLimitingService;
 
 class RateLimitingStatusWidget extends BaseWidget
 {

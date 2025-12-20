@@ -1,9 +1,9 @@
 <?php
 
-namespace Umun\Notifier\Services;
+namespace Usamamuneerchaudhary\Notifier\Services;
 
 use Illuminate\Support\Facades\Cache;
-use Umun\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class NotificationRepository
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace Umun\Notifier\Services\ChannelDrivers;
+namespace Usamamuneerchaudhary\Notifier\Services\ChannelDrivers;
 
 use Illuminate\Support\Facades\Http;
-use Umun\Notifier\Models\Notification;
+use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class SlackDriver implements ChannelDriverInterface
 {
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Umun\Notifier\Models\NotificationChannel::where('type', 'slack')->first();
+            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'slack')->first();
             
             if (!$channel || !isset($channel->settings['webhook_url'])) {
                 return false;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Umun\Notifier\Facades;
+namespace Usamamuneerchaudhary\Notifier\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getRegisteredChannels()
  * @method static array getRegisteredEvents()
  * 
- * @see \Umun\Notifier\Services\NotifierManager
+ * @see \Usamamuneerchaudhary\Notifier\Services\NotifierManager
  */
 class Notifier extends Facade
 {

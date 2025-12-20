@@ -1,11 +1,11 @@
 <?php
 
-namespace Umun\Notifier\Services;
+namespace Usamamuneerchaudhary\Notifier\Services;
 
-use Umun\Notifier\Models\NotificationChannel;
-use Umun\Notifier\Models\NotificationEvent;
-use Umun\Notifier\Models\NotificationPreference;
-use Umun\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
+use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 
 class PreferenceService
 {
