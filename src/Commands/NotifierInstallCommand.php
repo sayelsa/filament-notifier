@@ -3,127 +3,54 @@
 namespace Usamamuneerchaudhary\Notifier\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 
 class NotifierInstallCommand extends Command
 {
-    protected $signature = 'notifier:install {--force : Overwrite existing files}';
-    protected $description = 'Install the Filament Notifier package';
+    protected $signature = 'notifier:install 
+                            {--force : Overwrite existing files}
+                            {--skip-config : Skip publishing configuration}
+                            {--skip-migrate : Skip running migrations}
+                            {--skip-seed : Skip creating sample data}';
 
-    public function handle()
+    protected $description = 'Install the Filament Notifier package (runs publish, migrate, and seed)';
+
+    public function handle(): int
     {
         $this->info('Installing Filament Notifier...');
+        $this->newLine();
 
-        // Publish config file
-        $this->call('vendor:publish', [
-            '--provider' => 'Usamamuneerchaudhary\Notifier\NotifierServiceProvider',
-            '--force' => $this->option('force'),
-        ]);
-
-        // Run migrations
-        $this->info('Running migrations...');
-        $this->call('migrate');
-
-        // Create sample data
-        if ($this->confirm('Would you like to create sample notification channels and templates?')) {
-            $this->createSampleData();
+        // Step 1: Publish assets
+        if (!$this->option('skip-config')) {
+            $this->call('notifier:publish', [
+                '--force' => $this->option('force'),
+            ]);
+            $this->newLine();
         }
 
-        $this->info('Filament Notifier has been installed successfully!');
+        // Step 2: Run migrations
+        if (!$this->option('skip-migrate')) {
+            $this->call('notifier:migrate');
+            $this->newLine();
+        }
+
+        // Step 3: Seed sample data
+        if (!$this->option('skip-seed')) {
+            if ($this->confirm('Would you like to create sample notification channels and templates?')) {
+                $this->call('notifier:seed');
+                $this->newLine();
+            }
+        }
+
+        $this->info('🎉 Filament Notifier has been installed successfully!');
+        $this->newLine();
         $this->info('You can now access the notification management panel in your Filament admin.');
-    }
+        $this->newLine();
+        $this->info('Available commands:');
+        $this->line('  php artisan notifier:publish   - Publish config/views/migrations');
+        $this->line('  php artisan notifier:migrate   - Run migrations');
+        $this->line('  php artisan notifier:seed      - Create sample data');
 
-    private function createSampleData()
-    {
-        $this->info('Creating sample data...');
-
-        // Create sample channels
-        $channels = [
-            [
-                'title' => 'Email Notifications',
-                'type' => 'email',
-                'icon' => 'heroicon-o-envelope',
-                'is_active' => true,
-                'settings' => [
-                    'smtp_host' => 'smtp.mailtrap.io',
-                    'smtp_port' => 2525,
-                ],
-            ],
-            [
-                'title' => 'Slack Notifications',
-                'type' => 'slack',
-                'icon' => 'heroicon-o-chat-bubble-left-right',
-                'is_active' => true,
-                'settings' => [
-                    'webhook_url' => env('SLACK_WEBHOOK_URL', ''),
-                ],
-            ],
-        ];
-
-        foreach ($channels as $channelData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::firstOrCreate(
-                ['type' => $channelData['type']],
-                $channelData
-            );
-        }
-
-        // Create sample events first
-        $events = [
-            [
-                'group' => 'User Management',
-                'name' => 'User Registered',
-                'key' => 'user.registered',
-                'description' => 'Triggered when a new user registers',
-                'is_active' => true,
-            ],
-            [
-                'group' => 'User Management',
-                'name' => 'Password Reset Requested',
-                'key' => 'password.reset',
-                'description' => 'Triggered when a user requests password reset',
-                'is_active' => true,
-            ],
-        ];
-
-        foreach ($events as $eventData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationEvent::firstOrCreate(
-                ['key' => $eventData['key']],
-                $eventData
-            );
-        }
-
-        // Create sample templates
-        $templates = [
-            [
-                'name' => 'Welcome Email',
-                'event_key' => 'user.registered',
-                'subject' => 'Welcome to {{app_name}}, {{name}}!',
-                'content' => "Hi {{name}},\n\nWelcome to {{app_name}}! We're excited to have you on board.\n\nBest regards,\nThe {{app_name}} Team",
-                'variables' => [
-                    'name' => 'User\'s full name',
-                    'app_name' => 'Application name',
-                ],
-            ],
-            [
-                'name' => 'Password Reset',
-                'event_key' => 'password.reset',
-                'subject' => 'Reset Your Password',
-                'content' => "Hi {{name}},\n\nYou requested a password reset. Click the link below to reset your password:\n\n{{reset_link}}\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nThe {{app_name}} Team",
-                'variables' => [
-                    'name' => 'User\'s full name',
-                    'reset_link' => 'Password reset link',
-                    'app_name' => 'Application name',
-                ],
-            ],
-        ];
-
-        foreach ($templates as $templateData) {
-            \Usamamuneerchaudhary\Notifier\Models\NotificationTemplate::firstOrCreate(
-                ['name' => $templateData['name'], 'event_key' => $templateData['event_key']],
-                $templateData
-            );
-        }
-
-        $this->info('Sample data created successfully!');
+        return self::SUCCESS;
     }
 }
+

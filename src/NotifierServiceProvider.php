@@ -8,6 +8,9 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Usamamuneerchaudhary\Notifier\Commands\CleanupAnalyticsCommand;
 use Usamamuneerchaudhary\Notifier\Commands\NotifierInstallCommand;
+use Usamamuneerchaudhary\Notifier\Commands\NotifierMigrateCommand;
+use Usamamuneerchaudhary\Notifier\Commands\NotifierPublishCommand;
+use Usamamuneerchaudhary\Notifier\Commands\NotifierSeedCommand;
 use Usamamuneerchaudhary\Notifier\Commands\SendTestNotificationCommand;
 use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceController;
 use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationTrackingController;
@@ -37,6 +40,9 @@ class NotifierServiceProvider extends PackageServiceProvider
             ->hasMigrations()
             ->hasCommands([
                 NotifierInstallCommand::class,
+                NotifierPublishCommand::class,
+                NotifierMigrateCommand::class,
+                NotifierSeedCommand::class,
                 SendTestNotificationCommand::class,
                 CleanupAnalyticsCommand::class,
             ]);
