@@ -21,6 +21,7 @@ use Usamamuneerchaudhary\Notifier\Services\ChannelDriverFactory;
 use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
+use Usamamuneerchaudhary\Notifier\Services\TenantService;
 use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
 
 class NotifierServiceProvider extends PackageServiceProvider
@@ -43,6 +44,9 @@ class NotifierServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        // Register TenantService first as other services may depend on it
+        $this->app->singleton(TenantService::class);
+
         $this->app->singleton('notifier', function () {
             return new NotifierManager();
         });
@@ -102,7 +106,12 @@ class NotifierServiceProvider extends PackageServiceProvider
             }
 
             $notifier = $this->app->make('notifier');
-            $channels = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('is_active', true)->get();
+
+            // During boot, we register all active channels globally
+            // The tenant scoping happens when channels are used at runtime
+            $channels = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::withoutGlobalScope('tenant')
+                ->where('is_active', true)
+                ->get();
 
             $driverFactory = new ChannelDriverFactory();
             foreach ($channels as $channel) {

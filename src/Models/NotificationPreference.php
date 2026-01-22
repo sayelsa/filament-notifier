@@ -3,11 +3,15 @@ namespace Usamamuneerchaudhary\Notifier\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Usamamuneerchaudhary\Notifier\Traits\HasTenant;
 
 class NotificationPreference extends Model
 {
+    use HasTenant;
+
     protected $table = 'notifier_preferences';
     protected $fillable = [
+        'tenant_id',
         'user_id',
         'notification_event_id',
         'channels',

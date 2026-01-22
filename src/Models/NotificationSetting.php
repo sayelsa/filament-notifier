@@ -4,11 +4,16 @@
 namespace Usamamuneerchaudhary\Notifier\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Usamamuneerchaudhary\Notifier\Services\TenantService;
+use Usamamuneerchaudhary\Notifier\Traits\HasTenant;
 
 class NotificationSetting extends Model
 {
+    use HasTenant;
+
     protected $table = 'notifier_settings';
     protected $fillable = [
+        'tenant_id',
         'key',
         'value',
         'group'
@@ -20,19 +25,41 @@ class NotificationSetting extends Model
 
     public static function get(string $key, $default = null)
     {
-        $setting = static::where('key', $key)->first();
+        $query = static::where('key', $key);
+
+        // Apply tenant filtering if enabled
+        $tenantService = app(TenantService::class);
+        if ($tenantService->isEnabled()) {
+            $tenantId = $tenantService->getCurrentTenantId();
+            if ($tenantId !== null) {
+                $query->where($tenantService->getTenantColumn(), $tenantId);
+            }
+        }
+
+        $setting = $query->first();
         return $setting ? $setting->value : $default;
     }
 
     public static function set(string $key, $value, string $group = 'general'): void
     {
-        static::updateOrCreate(
-            ['key' => $key],
-            [
-                'value' => $value,
-                'group' => $group
-            ]
-        );
+        $data = [
+            'value' => $value,
+            'group' => $group
+        ];
+
+        $whereConditions = ['key' => $key];
+
+        // Apply tenant filtering if enabled
+        $tenantService = app(TenantService::class);
+        if ($tenantService->isEnabled()) {
+            $tenantId = $tenantService->getCurrentTenantId();
+            if ($tenantId !== null) {
+                $whereConditions[$tenantService->getTenantColumn()] = $tenantId;
+                $data[$tenantService->getTenantColumn()] = $tenantId;
+            }
+        }
+
+        static::updateOrCreate($whereConditions, $data);
     }
 
     /**
@@ -62,3 +89,4 @@ class NotificationSetting extends Model
         return is_array($rateLimiting) ? $rateLimiting : [];
     }
 }
+

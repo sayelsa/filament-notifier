@@ -4,11 +4,15 @@ namespace Usamamuneerchaudhary\Notifier\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Schema;
+use Usamamuneerchaudhary\Notifier\Traits\HasTenant;
 
 class NotificationEvent extends Model
 {
+    use HasTenant;
+
     protected $table = 'notifier_events';
     protected $fillable = [
+        'tenant_id',
         'group',
         'name',
         'key',

@@ -49,4 +49,52 @@ return [
         'template_cache' => env('NOTIFIER_TEMPLATE_CACHE', false),
         'log_unreplaced_variables' => env('NOTIFIER_LOG_UNREPLACED_VARIABLES', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Multi-Tenancy Settings
+    |--------------------------------------------------------------------------
+    |
+    | Configure multi-tenancy support for the notifier package. When enabled,
+    | all notification data will be scoped by tenant_id. When disabled, the
+    | package works in single-tenant mode.
+    |
+    */
+    'multitenancy' => [
+        'enabled' => env('NOTIFIER_MULTITENANCY_ENABLED', false),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tenant Model
+        |--------------------------------------------------------------------------
+        |
+        | The fully qualified class name of your tenant model (e.g., App\Models\Team,
+        | App\Models\Organization). This model will be used for tenant relationships.
+        |
+        */
+        'tenant_model' => env('NOTIFIER_TENANT_MODEL', null),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tenant Column
+        |--------------------------------------------------------------------------
+        |
+        | The column name used in database tables to store the tenant identifier.
+        |
+        */
+        'tenant_column' => env('NOTIFIER_TENANT_COLUMN', 'tenant_id'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tenant Resolver
+        |--------------------------------------------------------------------------
+        |
+        | How to resolve the current tenant. Options:
+        | - 'filament': Uses Filament::getTenant() (recommended for Filament panels)
+        | - 'session': Reads tenant_id from session
+        | - A fully qualified class name implementing TenantResolverInterface
+        |
+        */
+        'resolver' => env('NOTIFIER_TENANT_RESOLVER', 'filament'),
+    ],
 ];
