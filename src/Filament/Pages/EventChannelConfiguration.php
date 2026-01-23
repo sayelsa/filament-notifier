@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
@@ -28,6 +29,11 @@ class EventChannelConfiguration extends Page implements HasForms
     public ?array $data = [];
 
     public function mount(): void
+    {
+        $this->form->fill($this->getFormData());
+    }
+
+    protected function getFormData(): array
     {
         $eventService = app(EventService::class);
         $events = $eventService->grouped();
@@ -56,7 +62,14 @@ class EventChannelConfiguration extends Page implements HasForms
             }
         }
 
-        $this->form->fill($formData);
+        return $formData;
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema($this->getFormSchema())
+            ->statePath('data');
     }
 
     protected function getFormSchema(): array
