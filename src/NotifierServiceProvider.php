@@ -16,6 +16,7 @@ use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceControl
 use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationTrackingController;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
@@ -61,6 +62,7 @@ class NotifierServiceProvider extends PackageServiceProvider
         });
 
         $this->app->bind('notifier.channel', NotificationChannel::class);
+        $this->app->bind('notifier.event', NotificationEvent::class);
         $this->app->bind('notifier.template', NotificationTemplate::class);
         $this->app->bind('notifier.preference', NotificationPreference::class);
         $this->app->bind('notifier.notification', Notification::class);

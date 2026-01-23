@@ -125,31 +125,42 @@ class NotifierManager
             return $this->events[$eventKey];
         }
 
-        // Check if event exists in config
+        // Check if event exists in config (new approach)
         $eventService = app(EventService::class);
-        if (!$eventService->exists($eventKey)) {
-            return null;
+        if ($eventService->exists($eventKey)) {
+            // Get channels from EventChannelSetting (admin preferences)
+            $channels = EventChannelSetting::getChannelsForEvent($eventKey);
+            if (empty($channels)) {
+                $channels = ['email']; // Default fallback
+            }
+
+            // Get template for this event
+            $template = NotificationTemplate::where('event_key', $eventKey)
+                ->where('is_active', true)
+                ->first();
+
+            if ($template) {
+                return [
+                    'channels' => $channels,
+                    'template' => $template,
+                ];
+            }
         }
 
-        // Get channels from EventChannelSetting (admin preferences)
-        $channels = EventChannelSetting::getChannelsForEvent($eventKey);
-        if (empty($channels)) {
-            $channels = ['email']; // Default fallback
+        // Fallback: Check database NotificationEvent for backward compatibility
+        $event = \Usamamuneerchaudhary\Notifier\Models\NotificationEvent::where('key', $eventKey)->first();
+        if ($event) {
+            $template = $event->templates()->where('is_active', true)->first();
+            if ($template) {
+                $channels = $event->settings['channels'] ?? ['email'];
+                return [
+                    'channels' => $channels,
+                    'template' => $template,
+                ];
+            }
         }
 
-        // Get template for this event
-        $template = NotificationTemplate::where('event_key', $eventKey)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$template) {
-            return null;
-        }
-
-        return [
-            'channels' => $channels,
-            'template' => $template,
-        ];
+        return null;
     }
 
     protected function getTemplate($template): ?NotificationTemplate
