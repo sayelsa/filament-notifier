@@ -43,6 +43,16 @@ return [
             'group' => 'Users',
             'description' => 'Triggered when a user requests a password reset',
         ],
+        'reminder.email' => [
+            'name' => 'Reminder Email',
+            'group' => 'Reminders',
+            'description' => 'Triggered for scheduled reminder emails',
+        ],
+        'test.event' => [
+            'name' => 'Test Event',
+            'group' => 'Test',
+            'description' => 'Used for testing purposes',
+        ],
         // Add your custom events here
     ],
 

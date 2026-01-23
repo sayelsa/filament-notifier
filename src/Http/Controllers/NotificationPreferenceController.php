@@ -6,16 +6,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Usamamuneerchaudhary\Notifier\Http\Requests\UpdatePreferenceRequest;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
 class NotificationPreferenceController extends Controller
 {
     public function __construct(
-        protected PreferenceService $preferenceService
+        protected PreferenceService $preferenceService,
+        protected EventService $eventService
     ) {}
 
     /**
@@ -24,21 +26,21 @@ class NotificationPreferenceController extends Controller
     public function index(): JsonResponse
     {
         $user = Auth::user();
-        $events = NotificationEvent::where('is_active', true)->get();
+        $events = $this->eventService->all();
         $preferences = [];
 
-        foreach ($events as $event) {
+        foreach ($events as $eventKey => $event) {
             $preference = NotificationPreference::where('user_id', $user->id)
-                ->where('notification_event_id', $event->id)
+                ->where('event_key', $eventKey)
                 ->first();
 
-            $channels = $this->preferenceService->getChannelsForEvent($event, $preference);
+            $channels = $this->preferenceService->getChannelsForEventKey($eventKey, $preference);
 
             $preferences[] = [
-                'event_key' => $event->key,
-                'event_name' => $event->name,
-                'event_group' => $event->group,
-                'description' => $event->description,
+                'event_key' => $eventKey,
+                'event_name' => $event['name'],
+                'event_group' => $event['group'],
+                'description' => $event['description'] ?? '',
                 'channels' => $channels,
             ];
         }
@@ -51,18 +53,18 @@ class NotificationPreferenceController extends Controller
      */
     public function available(): JsonResponse
     {
-        $events = NotificationEvent::where('is_active', true)
-            ->select('id', 'key', 'name', 'group', 'description', 'settings')
-            ->get()
-            ->map(function ($event) {
+        $events = collect($this->eventService->all())
+            ->map(function ($event, $key) {
+                $channelSetting = EventChannelSetting::where('event_key', $key)->first();
                 return [
-                    'key' => $event->key,
-                    'name' => $event->name,
-                    'group' => $event->group,
-                    'description' => $event->description,
-                    'default_channels' => $event->settings['channels'] ?? [],
+                    'key' => $key,
+                    'name' => $event['name'],
+                    'group' => $event['group'],
+                    'description' => $event['description'] ?? '',
+                    'default_channels' => $channelSetting ? $channelSetting->channels : [],
                 ];
-            });
+            })
+            ->values();
 
         $channels = NotificationChannel::where('is_active', true)
             ->select('type', 'title', 'icon')
@@ -89,23 +91,24 @@ class NotificationPreferenceController extends Controller
     public function show(string $eventKey): JsonResponse
     {
         $user = Auth::user();
-        $event = NotificationEvent::where('key', $eventKey)
-            ->where('is_active', true)
-            ->firstOrFail();
+        $event = $this->eventService->get($eventKey);
+        
+        if (!$event) {
+            abort(404, "Event not found");
+        }
 
         $preference = NotificationPreference::where('user_id', $user->id)
-            ->where('notification_event_id', $event->id)
+            ->where('event_key', $eventKey)
             ->first();
 
-
-        $channels = $this->preferenceService->getChannelsForEvent($event, $preference);
+        $channels = $this->preferenceService->getChannelsForEventKey($eventKey, $preference);
 
         return response()->json([
             'data' => [
-                'event_key' => $event->key,
-                'event_name' => $event->name,
-                'event_group' => $event->group,
-                'description' => $event->description,
+                'event_key' => $eventKey,
+                'event_name' => $event['name'],
+                'event_group' => $event['group'],
+                'description' => $event['description'] ?? '',
                 'channels' => $channels,
             ],
         ]);
@@ -117,9 +120,11 @@ class NotificationPreferenceController extends Controller
     public function update(UpdatePreferenceRequest $request, string $eventKey): JsonResponse
     {
         $user = Auth::user();
-        $event = NotificationEvent::where('key', $eventKey)
-            ->where('is_active', true)
-            ->firstOrFail();
+        $event = $this->eventService->get($eventKey);
+        
+        if (!$event) {
+            abort(404, "Event not found");
+        }
 
         $preferences = NotificationSetting::getPreferences();
         if (!($preferences['allow_override'] ?? config('notifier.settings.preferences.allow_override', true))) {
@@ -144,7 +149,7 @@ class NotificationPreferenceController extends Controller
         $preference = NotificationPreference::updateOrCreate(
             [
                 'user_id' => $user->id,
-                'notification_event_id' => $event->id,
+                'event_key' => $eventKey,
             ],
             [
                 'channels' => $validatedChannels,
@@ -154,8 +159,8 @@ class NotificationPreferenceController extends Controller
 
         return response()->json([
             'data' => [
-                'event_key' => $event->key,
-                'event_name' => $event->name,
+                'event_key' => $eventKey,
+                'event_name' => $event['name'],
                 'channels' => $preference->channels,
             ],
             'message' => 'Preferences updated successfully.',
@@ -163,5 +168,3 @@ class NotificationPreferenceController extends Controller
     }
 
 }
-
-

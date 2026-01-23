@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Usamamuneerchaudhary\Notifier\Tests\TestCase;
@@ -29,8 +29,8 @@ class NotifierManagerTest extends TestCase
         // Create test data
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
-        $template = $this->createTemplate('welcome-email', $event->key);
+        $this->createEvent('user.registered');
+        $template = $this->createTemplate('welcome-email', 'user.registered');
 
         // Send notification
         $this->manager->send($user, 'user.registered', [
@@ -53,8 +53,8 @@ class NotifierManagerTest extends TestCase
 
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('reminder.email');
-        $template = $this->createTemplate('reminder-email', $event->key);
+        $this->createEvent('reminder.email');
+        $template = $this->createTemplate('reminder-email', 'reminder.email');
 
         $scheduledAt = Carbon::now()->addDays(7);
 
@@ -78,8 +78,8 @@ class NotifierManagerTest extends TestCase
     {
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
-        $template = $this->createTemplate('welcome-email', $event->key);
+        $this->createEvent('user.registered');
+        $template = $this->createTemplate('welcome-email', 'user.registered');
 
         // Mock user preferences to disable email
         $this->manager->registerEvent('user.registered', [
@@ -110,7 +110,7 @@ class NotifierManagerTest extends TestCase
     {
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
+        $this->createEvent('user.registered');
 
         // Try to send notification with non-existent template
         $this->manager->send($user, 'user.registered', []);
@@ -126,8 +126,8 @@ class NotifierManagerTest extends TestCase
 
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
-        $template = $this->createTemplate('welcome-email', $event->key);
+        $this->createEvent('user.registered');
+        $template = $this->createTemplate('welcome-email', 'user.registered');
 
         $this->manager->send($user, 'user.registered', [
             'name' => 'John Doe',
@@ -157,8 +157,8 @@ class NotifierManagerTest extends TestCase
 
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
-        $template = $this->createTemplate('welcome-email', $event->key);
+        $this->createEvent('user.registered');
+        $template = $this->createTemplate('welcome-email', 'user.registered');
 
         $this->manager->send($user, 'user.registered', [
             'name' => 'John Doe',
@@ -181,11 +181,11 @@ class NotifierManagerTest extends TestCase
 
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
+        $this->createEvent('user.registered');
         
         $template = NotificationTemplate::create([
             'name' => 'test-template',
-            'event_key' => $event->key,
+            'event_key' => 'user.registered',
             'subject' => 'Test',
             'content' => 'Visit <a href="https://example.com">our website</a> for more info.',
         ]);
@@ -211,11 +211,11 @@ class NotifierManagerTest extends TestCase
 
         $user = $this->createUser();
         $channel = $this->createChannel('email');
-        $event = $this->createEvent('user.registered');
+        $this->createEvent('user.registered');
         
         $template = NotificationTemplate::create([
             'name' => 'test-template',
-            'event_key' => $event->key,
+            'event_key' => 'user.registered',
             'subject' => 'Test',
             'content' => 'Visit <a href="https://example.com">our website</a> for more info.',
         ]);
@@ -261,14 +261,11 @@ class NotifierManagerTest extends TestCase
         ]);
     }
 
-    private function createEvent(string $key): NotificationEvent
+    private function createEvent(string $key): void
     {
-        return NotificationEvent::create([
-            'group' => 'User Management',
-            'name' => 'User Registered',
-            'key' => $key,
-            'description' => 'Triggered when a new user registers',
-            'is_active' => true,
+        EventChannelSetting::create([
+            'event_key' => $key,
+            'channels' => ['email'],
         ]);
     }
 }

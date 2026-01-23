@@ -13,7 +13,7 @@ class NotificationPreference extends Model
     protected $fillable = [
         'tenant_id',
         'user_id',
-        'notification_event_id',
+        'event_key',
         'channels',
         'settings',
     ];
@@ -26,10 +26,5 @@ class NotificationPreference extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(config('auth.providers.users.model'));
-    }
-
-    public function event(): BelongsTo
-    {
-        return $this->belongsTo(NotificationEvent::class, 'notification_event_id');
     }
 }

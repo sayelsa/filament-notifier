@@ -7,7 +7,6 @@ use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationChannelResource
 use Usamamuneerchaudhary\Notifier\Filament\Pages\EventChannelConfiguration;
 use Usamamuneerchaudhary\Notifier\Filament\Pages\NotifierDashboard;
 use Usamamuneerchaudhary\Notifier\Filament\Pages\NotificationSettings;
-use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationEventResource;
 use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationTemplateResource;
 use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
 use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationAnalyticsChart;
@@ -37,7 +36,6 @@ class FilamentNotifierPlugin implements Plugin
             ])
             ->resources([
                 NotificationChannelResource::class,
-                NotificationEventResource::class,
                 NotificationTemplateResource::class,
                 NotificationResource::class,
             ])

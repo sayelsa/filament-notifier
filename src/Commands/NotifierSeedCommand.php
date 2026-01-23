@@ -3,20 +3,21 @@
 namespace Usamamuneerchaudhary\Notifier\Commands;
 
 use Illuminate\Console\Command;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\TenantService;
 
 class NotifierSeedCommand extends Command
 {
     protected $signature = 'notifier:seed 
                             {--channels : Seed only notification channels}
-                            {--events : Seed only notification events}
+                            {--events : Seed only event channel settings}
                             {--templates : Seed only notification templates}
                             {--tenant= : Tenant ID to associate seeded data with (for multi-tenant setups)}';
 
-    protected $description = 'Create sample notification channels, events, and templates';
+    protected $description = 'Create sample notification channels, event channel settings, and templates';
 
     public function handle(): int
     {
@@ -56,7 +57,7 @@ class NotifierSeedCommand extends Command
         }
 
         if ($seedAll || $seedEvents) {
-            $this->seedEvents();
+            $this->seedEventChannelSettings();
         }
 
         if ($seedAll || $seedTemplates) {
@@ -116,47 +117,26 @@ class NotifierSeedCommand extends Command
         }
     }
 
-    protected function seedEvents(): void
+    protected function seedEventChannelSettings(): void
     {
-        $this->info('Creating sample events...');
+        $this->info('Creating event channel settings from config...');
+        $this->info('(Events are now defined in config/notifier.php)');
 
-        $events = [
-            [
-                'group' => 'User Management',
-                'name' => 'User Registered',
-                'key' => 'user.registered',
-                'description' => 'Triggered when a new user registers',
-                'is_active' => true,
-            ],
-            [
-                'group' => 'User Management',
-                'name' => 'Password Reset Requested',
-                'key' => 'password.reset',
-                'description' => 'Triggered when a user requests password reset',
-                'is_active' => true,
-            ],
-            [
-                'group' => 'Orders',
-                'name' => 'Order Placed',
-                'key' => 'order.placed',
-                'description' => 'Triggered when a new order is placed',
-                'is_active' => true,
-            ],
-            [
-                'group' => 'Orders',
-                'name' => 'Order Shipped',
-                'key' => 'order.shipped',
-                'description' => 'Triggered when an order is shipped',
-                'is_active' => true,
-            ],
-        ];
+        $eventService = app(EventService::class);
+        $events = $eventService->all();
 
-        foreach ($events as $eventData) {
-            $event = NotificationEvent::firstOrCreate(
-                ['key' => $eventData['key']],
-                $eventData
+        if (empty($events)) {
+            $this->warn('  No events found in config. Add events to config/notifier.php');
+            return;
+        }
+
+        // Create channel settings for each configured event
+        foreach ($events as $eventKey => $event) {
+            $setting = EventChannelSetting::firstOrCreate(
+                ['event_key' => $eventKey],
+                ['channels' => ['email']] // Default to email
             );
-            $this->line("  ✓ {$event->name}");
+            $this->line("  ✓ {$event['name']} ({$eventKey})");
         }
     }
 
@@ -177,7 +157,7 @@ class NotifierSeedCommand extends Command
             ],
             [
                 'name' => 'Password Reset',
-                'event_key' => 'password.reset',
+                'event_key' => 'user.password_reset',
                 'subject' => 'Reset Your Password',
                 'content' => "Hi {{name}},\n\nYou requested a password reset. Click the link below to reset your password:\n\n{{reset_link}}\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nThe {{app_name}} Team",
                 'variables' => [

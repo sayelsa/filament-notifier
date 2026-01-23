@@ -11,7 +11,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class NotificationTemplateTable
 {
@@ -24,8 +24,13 @@ class NotificationTemplateTable
                     ->label('Template Name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('event.name')
+                TextColumn::make('event_key')
                     ->label('Event')
+                    ->formatStateUsing(function ($state) {
+                        $eventService = app(EventService::class);
+                        $event = $eventService->get($state);
+                        return $event['name'] ?? $state;
+                    })
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('is_active')
@@ -37,7 +42,7 @@ class NotificationTemplateTable
             ->filters([
                 SelectFilter::make('event_key')
                     ->label('Event')
-                    ->options(fn() => NotificationEvent::pluck('name', 'key')->toArray()),
+                    ->options(fn() => app(EventService::class)->options()),
                 TernaryFilter::make('is_active'),
             ])
             ->recordActions([

@@ -21,7 +21,6 @@ class NotifierServiceProviderTest extends TestCase
     public function test_it_registers_model_bindings()
     {
         $this->assertTrue($this->app->bound('notifier.channel'));
-        $this->assertTrue($this->app->bound('notifier.event'));
         $this->assertTrue($this->app->bound('notifier.template'));
         $this->assertTrue($this->app->bound('notifier.preference'));
         $this->assertTrue($this->app->bound('notifier.notification'));

@@ -3,7 +3,6 @@
 namespace Usamamuneerchaudhary\Notifier\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Usamamuneerchaudhary\Notifier\Traits\HasTenant;
 
@@ -26,11 +25,6 @@ class NotificationTemplate extends Model
         'variables' => 'array',
         'is_active' => 'boolean',
     ];
-
-    public function event(): BelongsTo
-    {
-        return $this->belongsTo(NotificationEvent::class, 'event_key', 'key');
-    }
 
     public function notifications(): HasMany
     {

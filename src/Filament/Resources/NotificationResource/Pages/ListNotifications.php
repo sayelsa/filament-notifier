@@ -11,8 +11,9 @@ use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Illuminate\Support\Facades\Log;
 
@@ -32,18 +33,17 @@ class ListNotifications extends ListRecords
                         ->label('Event')
                         ->helperText('Select the notification event to trigger. Make sure the event has a template linked to it.')
                         ->options(function () {
-                            return NotificationEvent::where('is_active', true)
-                                ->with('templates')
-                                ->get()
-                                ->mapWithKeys(function ($event) {
-                                    $hasTemplate = $event->templates()->exists();
-                                    $label = $event->name;
-                                    if (!$hasTemplate) {
-                                        $label .= ' (⚠️ No template)';
-                                    }
-                                    return [$event->key => $label];
-                                })
-                                ->toArray();
+                            $eventService = app(EventService::class);
+                            $events = $eventService->all();
+                            
+                            return collect($events)->mapWithKeys(function ($event, $key) {
+                                $hasTemplate = NotificationTemplate::where('event_key', $key)->exists();
+                                $label = $event['name'];
+                                if (!$hasTemplate) {
+                                    $label .= ' (⚠️ No template)';
+                                }
+                                return [$key => $label];
+                            })->toArray();
                         })
                         ->required()
                         ->searchable()
@@ -51,17 +51,13 @@ class ListNotifications extends ListRecords
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             // Load template variables for the selected event
                             if ($state) {
-                                $event = NotificationEvent::where('key', $state)->first();
-                                if ($event) {
-                                    $template = $event->templates()->first();
-                                    if ($template && $template->variables) {
-
-                                        $defaultData = [];
-                                        foreach ($template->variables as $key => $description) {
-                                            $defaultData[$key] = '';
-                                        }
-                                        $set('data', $defaultData);
+                                $template = NotificationTemplate::where('event_key', $state)->first();
+                                if ($template && $template->variables) {
+                                    $defaultData = [];
+                                    foreach ($template->variables as $key => $description) {
+                                        $defaultData[$key] = '';
                                     }
+                                    $set('data', $defaultData);
                                 }
                             }
                         }),
@@ -116,15 +112,17 @@ class ListNotifications extends ListRecords
                             throw new \Exception('User not found');
                         }
 
-                        // Check if event has a template
-                        $event = NotificationEvent::where('key', $data['event_key'])->first();
+                        // Check if event exists in config
+                        $eventService = app(EventService::class);
+                        $event = $eventService->get($data['event_key']);
                         if (!$event) {
                             throw new \Exception("Event '{$data['event_key']}' not found");
                         }
 
-                        $template = $event->templates()->first();
+                        // Check if event has a template
+                        $template = NotificationTemplate::where('event_key', $data['event_key'])->first();
                         if (!$template) {
-                            throw new \Exception("Event '{$event->name}' does not have a template linked to it. Please create a template and link it to this event.");
+                            throw new \Exception("Event '{$event['name']}' does not have a template linked to it. Please create a template and link it to this event.");
                         }
 
                         $notifier = app(NotifierManager::class);
@@ -149,10 +147,10 @@ class ListNotifications extends ListRecords
                             }
 
                             $channelsList = implode(', ', $channelsUsed);
-                            $message = "Test notifications queued for {$user->name} ({$user->email}) using event: {$event->name}. Channels: {$channelsList}";
+                            $message = "Test notifications queued for {$user->name} ({$user->email}) using event: {$event['name']}. Channels: {$channelsList}";
                         } else {
                             $notifier->send($user, $eventKey, $templateData);
-                            $message = "Notification queued for {$user->name} ({$user->email}) using event: {$event->name}";
+                            $message = "Notification queued for {$user->name} ({$user->email}) using event: {$event['name']}";
                         }
 
                         Notification::make()

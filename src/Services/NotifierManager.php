@@ -147,19 +147,6 @@ class NotifierManager
             }
         }
 
-        // Fallback: Check database NotificationEvent for backward compatibility
-        $event = \Usamamuneerchaudhary\Notifier\Models\NotificationEvent::where('key', $eventKey)->first();
-        if ($event) {
-            $template = $event->templates()->where('is_active', true)->first();
-            if ($template) {
-                $channels = $event->settings['channels'] ?? ['email'];
-                return [
-                    'channels' => $channels,
-                    'template' => $template,
-                ];
-            }
-        }
-
         return null;
     }
 

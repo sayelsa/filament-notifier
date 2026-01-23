@@ -2,8 +2,8 @@
 
 namespace Usamamuneerchaudhary\Notifier\Services;
 
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 
@@ -14,32 +14,33 @@ class PreferenceService
      */
     public function getUserPreferences($user, string $eventKey): array
     {
-        $event = NotificationEvent::where('key', $eventKey)->first();
-
-        if (!$event) {
+        // Check if event exists in config
+        $eventService = app(EventService::class);
+        if (!$eventService->exists($eventKey)) {
             return [];
         }
 
+        // Get user-specific preferences for this event key
         $preference = NotificationPreference::where('user_id', $user->id)
-            ->where('notification_event_id', $event->id)
+            ->where('event_key', $eventKey)
             ->first();
 
         if ($preference && isset($preference->channels)) {
             return $preference->channels;
         }
 
-        return $this->getDefaultPreferences($event);
+        return $this->getDefaultPreferencesForEventKey($eventKey);
     }
 
     /**
-     * Get channels configuration for an event (includes all active channels)
+     * Get channels configuration for an event key (includes all active channels)
      */
-    public function getChannelsForEvent(NotificationEvent $event, ?NotificationPreference $preference): array
+    public function getChannelsForEventKey(string $eventKey, ?NotificationPreference $preference): array
     {
         if ($preference && isset($preference->channels)) {
             $channels = $preference->channels;
         } else {
-            $channels = $this->getDefaultPreferences($event);
+            $channels = $this->getDefaultPreferencesForEventKey($eventKey);
         }
 
         $activeChannels = NotificationChannel::where('is_active', true)
@@ -56,9 +57,9 @@ class PreferenceService
     }
 
     /**
-     * Get default preferences for an event based on settings
+     * Get default preferences for an event key based on settings
      */
-    protected function getDefaultPreferences(NotificationEvent $event): array
+    protected function getDefaultPreferencesForEventKey(string $eventKey): array
     {
         $defaultChannels = NotificationSetting::get(
             'preferences.default_channels',
@@ -70,8 +71,10 @@ class PreferenceService
             $preferences[$channel] = true;
         }
 
-        if (isset($event->settings['channels']) && is_array($event->settings['channels'])) {
-            foreach ($event->settings['channels'] as $channel) {
+        // Get admin-configured channels for this event from EventChannelSetting
+        $channelSetting = EventChannelSetting::where('event_key', $eventKey)->first();
+        if ($channelSetting && is_array($channelSetting->channels)) {
+            foreach ($channelSetting->channels as $channel) {
                 $preferences[$channel] = true;
             }
         }

@@ -7,7 +7,7 @@ use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
 /**
  * @method static array getUserPreferences($user, string $eventKey)
- * @method static array getChannelsForEvent(\Usamamuneerchaudhary\Notifier\Models\NotificationEvent $event, ?\Usamamuneerchaudhary\Notifier\Models\NotificationPreference $preference)
+ * @method static array getChannelsForEventKey(string $eventKey, ?\Usamamuneerchaudhary\Notifier\Models\NotificationPreference $preference)
  * @method static bool shouldSendToChannel($user, string $channelType, array $preferences)
  *
  * @see \Usamamuneerchaudhary\Notifier\Services\PreferenceService
@@ -22,4 +22,3 @@ class Preference extends Facade
         return PreferenceService::class;
     }
 }
-

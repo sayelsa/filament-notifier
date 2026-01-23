@@ -5,7 +5,7 @@ namespace Usamamuneerchaudhary\Notifier\Tests\Feature;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
@@ -184,17 +184,15 @@ class RateLimitingTest extends TestCase
             'is_active' => true,
         ]);
 
-        $event = NotificationEvent::create([
-            'group' => 'Test',
-            'name' => 'Test Event',
-            'key' => 'test.event',
-            'is_active' => true,
-            'settings' => ['channels' => ['email']],
+        // Configure event channels (config-based event)
+        EventChannelSetting::create([
+            'event_key' => 'test.event',
+            'channels' => ['email'],
         ]);
 
         NotificationTemplate::create([
             'name' => 'test-template',
-            'event_key' => $event->key,
+            'event_key' => 'test.event',
             'subject' => 'Test',
             'content' => 'Test',
         ]);

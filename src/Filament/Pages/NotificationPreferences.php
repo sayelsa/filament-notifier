@@ -11,10 +11,11 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Illuminate\Support\Facades\Auth;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class NotificationPreferences extends Page implements HasForms
 {
@@ -32,26 +33,22 @@ class NotificationPreferences extends Page implements HasForms
     public function mount(): void
     {
         $user = Auth::user();
-        $events = NotificationEvent::where('is_active', true)
-            ->orderBy('group')
-            ->orderBy('name')
-            ->get();
+        $eventService = app(EventService::class);
+        $events = $eventService->grouped();
 
         $activeChannels = NotificationChannel::where('is_active', true)
             ->orderBy('title')
             ->get();
 
-        $groupedEvents = $events->groupBy('group');
-
         $formData = [];
 
-        foreach ($groupedEvents as $group => $groupEvents) {
-            foreach ($groupEvents as $event) {
+        foreach ($events as $group => $groupEvents) {
+            foreach ($groupEvents as $eventKey => $event) {
                 $preference = NotificationPreference::where('user_id', $user->id)
-                    ->where('notification_event_id', $event->id)
+                    ->where('event_key', $eventKey)
                     ->first();
 
-                $defaultChannels = $this->getDefaultChannelsForEvent($event);
+                $defaultChannels = $this->getDefaultChannelsForEventKey($eventKey);
 
                 $channelData = [];
                 foreach ($activeChannels as $channel) {
@@ -62,7 +59,9 @@ class NotificationPreferences extends Page implements HasForms
                     }
                 }
 
-                $formData["event_{$event->id}"] = $channelData;
+                // Use sanitized key for form field name (replace dots)
+                $sanitizedKey = $this->sanitizeEventKey($eventKey);
+                $formData["event_{$sanitizedKey}"] = $channelData;
             }
         }
 
@@ -71,27 +70,24 @@ class NotificationPreferences extends Page implements HasForms
 
     protected function getFormSchema(): array
     {
-        $events = NotificationEvent::where('is_active', true)
-            ->orderBy('group')
-            ->orderBy('name')
-            ->get();
+        $eventService = app(EventService::class);
+        $events = $eventService->grouped();
 
         $activeChannels = NotificationChannel::where('is_active', true)
             ->orderBy('title')
             ->get();
 
-        $groupedEvents = $events->groupBy('group');
-
         $sections = [];
 
-        foreach ($groupedEvents as $group => $groupEvents) {
+        foreach ($events as $group => $groupEvents) {
             $fields = [];
 
-            foreach ($groupEvents as $event) {
+            foreach ($groupEvents as $eventKey => $event) {
                 $channelCheckboxes = [];
+                $sanitizedKey = $this->sanitizeEventKey($eventKey);
 
                 foreach ($activeChannels as $channel) {
-                    $channelCheckboxes[] = Checkbox::make("event_{$event->id}.{$channel->type}")
+                    $channelCheckboxes[] = Checkbox::make("event_{$sanitizedKey}.{$channel->type}")
                         ->label('')
                         ->inline(false);
                 }
@@ -101,9 +97,9 @@ class NotificationPreferences extends Page implements HasForms
                     'md' => $activeChannels->count() + 1,
                 ])
                     ->schema([
-                        Forms\Components\Placeholder::make("event_label_{$event->id}")
-                            ->label($event->name)
-                            ->content($event->description ?: '')
+                        Forms\Components\Placeholder::make("event_label_{$sanitizedKey}")
+                            ->label($event['name'])
+                            ->content($event['description'] ?? '')
                             ->extraAttributes([
                                 'class' => 'font-medium text-gray-900'
                             ]),
@@ -164,6 +160,7 @@ class NotificationPreferences extends Page implements HasForms
             ->pluck('type')
             ->toArray();
 
+        $eventService = app(EventService::class);
         $updated = 0;
 
         foreach ($data as $key => $channels) {
@@ -171,10 +168,10 @@ class NotificationPreferences extends Page implements HasForms
                 continue;
             }
 
-            $eventId = (int) str_replace('event_', '', $key);
-            $event = NotificationEvent::find($eventId);
-
-            if (!$event) {
+            $sanitizedEventKey = str_replace('event_', '', $key);
+            $eventKey = $this->restoreEventKey($sanitizedEventKey);
+            
+            if (!$eventService->exists($eventKey)) {
                 continue;
             }
 
@@ -188,7 +185,7 @@ class NotificationPreferences extends Page implements HasForms
             NotificationPreference::updateOrCreate(
                 [
                     'user_id' => $user->id,
-                    'notification_event_id' => $eventId,
+                    'event_key' => $eventKey,
                 ],
                 [
                     'channels' => $validatedChannels,
@@ -205,14 +202,31 @@ class NotificationPreferences extends Page implements HasForms
             ->send();
     }
 
-    protected function getDefaultChannelsForEvent(NotificationEvent $event): array
+    protected function getDefaultChannelsForEventKey(string $eventKey): array
     {
-        if (isset($event->settings['channels']) && is_array($event->settings['channels'])) {
-            return $event->settings['channels'];
+        // Check EventChannelSetting for admin-configured channels
+        $channelSetting = EventChannelSetting::where('event_key', $eventKey)->first();
+        if ($channelSetting && is_array($channelSetting->channels)) {
+            return $channelSetting->channels;
         }
 
         $defaultChannels = NotificationSetting::get('preferences.default_channels', config('notifier.settings.preferences.default_channels', ['email']));
         return is_array($defaultChannels) ? $defaultChannels : ['email'];
     }
-}
 
+    /**
+     * Sanitize event key for use in form field names (replace dots)
+     */
+    protected function sanitizeEventKey(string $key): string
+    {
+        return str_replace('.', '__DOT__', $key);
+    }
+
+    /**
+     * Restore event key from sanitized form field name
+     */
+    protected function restoreEventKey(string $sanitized): string
+    {
+        return str_replace('__DOT__', '.', $sanitized);
+    }
+}
