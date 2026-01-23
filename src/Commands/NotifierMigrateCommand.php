@@ -3,6 +3,7 @@
 namespace Usamamuneerchaudhary\Notifier\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 
 class NotifierMigrateCommand extends Command
 {
@@ -18,6 +19,9 @@ class NotifierMigrateCommand extends Command
             if ($this->confirm('This will drop all notifier tables. Are you sure?')) {
                 $this->info('Dropping notifier tables...');
                 $this->dropNotifierTables();
+                
+                // Also remove from migrations table so they can run again
+                $this->cleanMigrationRecords();
             } else {
                 $this->info('Migration cancelled.');
                 return self::SUCCESS;
@@ -25,10 +29,9 @@ class NotifierMigrateCommand extends Command
         }
 
         $this->info('Running Notifier migrations...');
-        $this->call('migrate', [
-            '--path' => 'vendor/usamamuneerchaudhary/notifier/database/migrations',
-            '--force' => true,
-        ]);
+        
+        // Run the standard migrate command - package migrations are auto-loaded by the service provider
+        $this->call('migrate');
 
         $this->info('✓ Migrations completed successfully!');
 
@@ -51,8 +54,36 @@ class NotifierMigrateCommand extends Command
         ];
 
         foreach ($tables as $table) {
-            \Illuminate\Support\Facades\Schema::dropIfExists($table);
+            Schema::dropIfExists($table);
             $this->line("  Dropped: {$table}");
         }
     }
+
+    protected function cleanMigrationRecords(): void
+    {
+        if (!Schema::hasTable('migrations')) {
+            return;
+        }
+
+        $migrations = [
+            'create_notification_channels_table',
+            'create_notification_events_table',
+            'create_notification_templates',
+            'create_notification_preferences',
+            'create_notifications',
+            'add_settings_to_notification_events_table',
+            'create_notification_settings_table',
+            'add_analytics_to_notifications',
+            'add_tenant_id_to_notifier_tables',
+        ];
+
+        foreach ($migrations as $migration) {
+            \Illuminate\Support\Facades\DB::table('migrations')
+                ->where('migration', 'like', "%{$migration}%")
+                ->delete();
+        }
+
+        $this->line('  Cleaned migration records');
+    }
 }
+
