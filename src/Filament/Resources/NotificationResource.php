@@ -18,6 +18,9 @@ class NotificationResource extends Resource
     protected static ?string $modelLabel = 'Notification';
     protected static ?string $pluralModelLabel = 'Notifications';
     protected static ?int $navigationSort = 5;
+    
+    // Use the 'tenant' relationship from HasTenant trait for Filament tenancy
+    protected static ?string $tenantOwnershipRelationshipName = 'tenant';
 
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {

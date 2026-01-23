@@ -17,6 +17,9 @@ class NotificationTemplateResource extends Resource
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-text';
     protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 4;
+    
+    // Use the 'tenant' relationship from HasTenant trait for Filament tenancy
+    protected static ?string $tenantOwnershipRelationshipName = 'tenant';
 
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
