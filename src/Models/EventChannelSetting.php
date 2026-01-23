@@ -3,6 +3,7 @@
 namespace Usamamuneerchaudhary\Notifier\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Usamamuneerchaudhary\Notifier\Services\TenantService;
 use Usamamuneerchaudhary\Notifier\Traits\HasTenant;
 
 class EventChannelSetting extends Model
@@ -43,10 +44,26 @@ class EventChannelSetting extends Model
      */
     public static function setChannelsForEvent(string $eventKey, array $channels): static
     {
-        return static::updateOrCreate(
-            ['event_key' => $eventKey],
-            ['channels' => $channels]
-        );
+        $tenantService = app(TenantService::class);
+        $tenantColumn = $tenantService->getTenantColumn();
+        $tenantId = $tenantService->getCurrentTenantId();
+        
+        // Build the condition for updateOrCreate
+        $condition = ['event_key' => $eventKey];
+        
+        // Include tenant_id in condition if multi-tenancy is enabled
+        if ($tenantService->isEnabled()) {
+            $condition[$tenantColumn] = $tenantId;
+        }
+        
+        $data = ['channels' => $channels];
+        
+        // Also include tenant_id in data if setting for the first time
+        if ($tenantService->isEnabled() && $tenantId !== null) {
+            $data[$tenantColumn] = $tenantId;
+        }
+        
+        return static::updateOrCreate($condition, $data);
     }
 
     /**
