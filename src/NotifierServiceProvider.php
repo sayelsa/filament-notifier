@@ -16,11 +16,11 @@ use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationPreferenceControl
 use Usamamuneerchaudhary\Notifier\Http\Controllers\NotificationTrackingController;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Services\AnalyticsService;
 use Usamamuneerchaudhary\Notifier\Services\ChannelDriverFactory;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\NotificationRepository;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
@@ -52,13 +52,15 @@ class NotifierServiceProvider extends PackageServiceProvider
     {
         // Register TenantService first as other services may depend on it
         $this->app->singleton(TenantService::class);
+        
+        // Register EventService for config-based events
+        $this->app->singleton(EventService::class);
 
         $this->app->singleton('notifier', function () {
             return new NotifierManager();
         });
 
         $this->app->bind('notifier.channel', NotificationChannel::class);
-        $this->app->bind('notifier.event', NotificationEvent::class);
         $this->app->bind('notifier.template', NotificationTemplate::class);
         $this->app->bind('notifier.preference', NotificationPreference::class);
         $this->app->bind('notifier.notification', Notification::class);

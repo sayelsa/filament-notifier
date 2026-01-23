@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
 
@@ -120,23 +120,36 @@ class NotifierManager
 
     protected function getEventConfig(string $eventKey): ?array
     {
+        // Check in-memory registered events first
         if (isset($this->events[$eventKey])) {
             return $this->events[$eventKey];
         }
 
-        $event = NotificationEvent::where('key', $eventKey)->first();
-        if ($event) {
-            $template = $event->templates()->first();
-            if ($template) {
-                $channels = $event->settings['channels'] ?? ['email'];
-                return [
-                    'channels' => $channels,
-                    'template' => $template,
-                ];
-            }
+        // Check if event exists in config
+        $eventService = app(EventService::class);
+        if (!$eventService->exists($eventKey)) {
+            return null;
         }
 
-        return null;
+        // Get channels from EventChannelSetting (admin preferences)
+        $channels = EventChannelSetting::getChannelsForEvent($eventKey);
+        if (empty($channels)) {
+            $channels = ['email']; // Default fallback
+        }
+
+        // Get template for this event
+        $template = NotificationTemplate::where('event_key', $eventKey)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$template) {
+            return null;
+        }
+
+        return [
+            'channels' => $channels,
+            'template' => $template,
+        ];
     }
 
     protected function getTemplate($template): ?NotificationTemplate

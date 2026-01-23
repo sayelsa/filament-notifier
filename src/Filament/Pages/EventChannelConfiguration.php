@@ -10,8 +10,9 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class EventChannelConfiguration extends Page implements HasForms
 {
@@ -28,29 +29,30 @@ class EventChannelConfiguration extends Page implements HasForms
 
     public function mount(): void
     {
-        $events = NotificationEvent::where('is_active', true)
-            ->orderBy('group')
-            ->orderBy('name')
-            ->get();
+        $eventService = app(EventService::class);
+        $events = $eventService->grouped();
 
         $activeChannels = NotificationChannel::where('is_active', true)
             ->orderBy('title')
             ->get();
 
-        $groupedEvents = $events->groupBy('group');
+        // Get current settings from database
+        $currentSettings = EventChannelSetting::getAllSettings();
 
         $formData = [];
 
-        foreach ($groupedEvents as $group => $groupEvents) {
-            foreach ($groupEvents as $event) {
-                $eventChannels = $event->settings['channels'] ?? [];
+        foreach ($events as $group => $groupEvents) {
+            foreach ($groupEvents as $eventKey => $event) {
+                $eventChannels = $currentSettings[$eventKey] ?? [];
 
                 $channelData = [];
                 foreach ($activeChannels as $channel) {
                     $channelData[$channel->type] = in_array($channel->type, $eventChannels);
                 }
 
-                $formData["event_{$event->id}"] = $channelData;
+                // Sanitize event key for form field name
+                $fieldKey = $this->sanitizeEventKey($eventKey);
+                $formData["event_{$fieldKey}"] = $channelData;
             }
         }
 
@@ -59,27 +61,24 @@ class EventChannelConfiguration extends Page implements HasForms
 
     protected function getFormSchema(): array
     {
-        $events = NotificationEvent::where('is_active', true)
-            ->orderBy('group')
-            ->orderBy('name')
-            ->get();
+        $eventService = app(EventService::class);
+        $events = $eventService->grouped();
 
         $activeChannels = NotificationChannel::where('is_active', true)
             ->orderBy('title')
             ->get();
 
-        $groupedEvents = $events->groupBy('group');
-
         $sections = [];
 
-        foreach ($groupedEvents as $group => $groupEvents) {
+        foreach ($events as $group => $groupEvents) {
             $fields = [];
 
-            foreach ($groupEvents as $event) {
+            foreach ($groupEvents as $eventKey => $event) {
                 $channelCheckboxes = [];
+                $fieldKey = $this->sanitizeEventKey($eventKey);
 
                 foreach ($activeChannels as $channel) {
-                    $channelCheckboxes[] = Checkbox::make("event_{$event->id}.{$channel->type}")
+                    $channelCheckboxes[] = Checkbox::make("event_{$fieldKey}.{$channel->type}")
                         ->label($channel->title)
                         ->inline(false);
                 }
@@ -89,9 +88,9 @@ class EventChannelConfiguration extends Page implements HasForms
                     'md' => $activeChannels->count() + 1,
                 ])
                     ->schema([
-                        Forms\Components\Placeholder::make("event_label_{$event->id}")
-                            ->label($event->name)
-                            ->content($event->description ?: '')
+                        Forms\Components\Placeholder::make("event_label_{$fieldKey}")
+                            ->label($event['name'] ?? $eventKey)
+                            ->content($event['description'] ?? '')
                             ->extraAttributes([
                                 'class' => 'font-medium text-gray-900'
                             ]),
@@ -103,7 +102,7 @@ class EventChannelConfiguration extends Page implements HasForms
             }
 
             $sections[] = Section::make($group ?: 'General')
-                ->description('Configure which channels should be used for each event. These are the default channels that will be used when sending notifications for these events.')
+                ->description('Configure which channels should be used for each event.')
                 ->schema([
                     ...$fields,
                 ])
@@ -121,6 +120,9 @@ class EventChannelConfiguration extends Page implements HasForms
             ->pluck('type')
             ->toArray();
 
+        $eventService = app(EventService::class);
+        $allEvents = $eventService->all();
+        
         $updated = 0;
 
         foreach ($data as $key => $channels) {
@@ -128,10 +130,11 @@ class EventChannelConfiguration extends Page implements HasForms
                 continue;
             }
 
-            $eventId = (int) str_replace('event_', '', $key);
-            $event = NotificationEvent::find($eventId);
+            // Restore event key from sanitized form field name
+            $fieldKey = str_replace('event_', '', $key);
+            $eventKey = $this->restoreEventKey($fieldKey, array_keys($allEvents));
 
-            if (!$event) {
+            if (!$eventKey || !isset($allEvents[$eventKey])) {
                 continue;
             }
 
@@ -142,12 +145,7 @@ class EventChannelConfiguration extends Page implements HasForms
                 }
             }
 
-            $settings = $event->settings ?? [];
-            $settings['channels'] = $enabledChannels;
-
-            $event->settings = $settings;
-            $event->save();
-
+            EventChannelSetting::setChannelsForEvent($eventKey, $enabledChannels);
             $updated++;
         }
 
@@ -157,5 +155,23 @@ class EventChannelConfiguration extends Page implements HasForms
             ->success()
             ->send();
     }
-}
 
+    /**
+     * Sanitize event key for use as form field name.
+     * Replaces dots with double underscores.
+     */
+    protected function sanitizeEventKey(string $eventKey): string
+    {
+        return str_replace('.', '__', $eventKey);
+    }
+
+    /**
+     * Restore event key from sanitized form field name.
+     */
+    protected function restoreEventKey(string $fieldKey, array $validKeys): ?string
+    {
+        $eventKey = str_replace('__', '.', $fieldKey);
+        
+        return in_array($eventKey, $validKeys) ? $eventKey : null;
+    }
+}

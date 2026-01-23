@@ -17,6 +17,37 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Notification Events
+    |--------------------------------------------------------------------------
+    |
+    | Define all notification events that can be triggered in your application.
+    | These are system-wide and not editable by tenants. Each event key is used
+    | when calling: app('notifier')->send($user, 'event.key', $data)
+    |
+    | Format:
+    | 'event.key' => [
+    |     'name' => 'Display Name',
+    |     'group' => 'Group Name',
+    |     'description' => 'When this event is triggered',
+    | ],
+    |
+    */
+    'events' => [
+        'user.registered' => [
+            'name' => 'User Registered',
+            'group' => 'Users',
+            'description' => 'Triggered when a new user registers',
+        ],
+        'user.password_reset' => [
+            'name' => 'Password Reset Requested',
+            'group' => 'Users',
+            'description' => 'Triggered when a user requests a password reset',
+        ],
+        // Add your custom events here
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Notification Settings
     |--------------------------------------------------------------------------
     |

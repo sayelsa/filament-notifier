@@ -9,7 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Usamamuneerchaudhary\Notifier\Models\NotificationEvent;
+use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class NotificationTemplateForm
 {
@@ -32,7 +32,7 @@ class NotificationTemplateForm
                         Select::make('event_key')
                             ->label('Linked Event')
                             ->helperText('Link this template to a specific notification event. This is required and helps organize templates. The template will be used when this event is triggered.')
-                            ->options(fn() => NotificationEvent::where('is_active', true)->pluck('name', 'key')->toArray())
+                            ->options(fn() => app(EventService::class)->options())
                             ->searchable()
                             ->required()
                             ->columnSpanFull(),
