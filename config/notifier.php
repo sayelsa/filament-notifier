@@ -96,5 +96,17 @@ return [
         |
         */
         'resolver' => env('NOTIFIER_TENANT_RESOLVER', 'filament'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ownership Relationship Name
+        |--------------------------------------------------------------------------
+        |
+        | The name of the relationship that Filament uses for tenant ownership.
+        | If null, it will be auto-detected from the tenant model name.
+        | Example: for App\Models\Org, it would be 'org'.
+        |
+        */
+        'ownership_relationship' => env('NOTIFIER_OWNERSHIP_RELATIONSHIP', null),
     ],
 ];

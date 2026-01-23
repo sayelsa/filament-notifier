@@ -51,6 +51,46 @@ trait HasTenant
     }
 
     /**
+     * Initialize the HasTenant trait for an instance.
+     * This adds dynamic relationships based on the tenant model name.
+     *
+     * @return void
+     */
+    public function initializeHasTenant(): void
+    {
+        // Nothing needed here - we use __call for dynamic relationships
+    }
+
+    /**
+     * Get the tenant relationship name based on the configured tenant model.
+     *
+     * @return string|null
+     */
+    public static function getTenantRelationshipName(): ?string
+    {
+        $tenantService = app(TenantService::class);
+        
+        if (!$tenantService->isEnabled()) {
+            return null;
+        }
+        
+        // Check for explicit config first
+        $configuredName = config('notifier.multitenancy.ownership_relationship');
+        if ($configuredName) {
+            return $configuredName;
+        }
+        
+        $tenantModel = $tenantService->getTenantModel();
+        
+        if (!$tenantModel) {
+            return null;
+        }
+        
+        // Get the class basename and convert to lowercase (e.g., "Org" -> "org", "Team" -> "team")
+        return strtolower(class_basename($tenantModel));
+    }
+
+    /**
      * Get the tenant relationship.
      *
      * @return BelongsTo|null
@@ -71,6 +111,27 @@ trait HasTenant
         }
 
         return $this->belongsTo($tenantModel, $tenantColumn);
+    }
+
+    /**
+     * Handle dynamic method calls for tenant relationship.
+     * This allows Filament to call the relationship by the tenant model name (e.g., org(), team()).
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        $tenantRelationshipName = static::getTenantRelationshipName();
+        
+        // If the method name matches the tenant relationship name, return the tenant relationship
+        if ($tenantRelationshipName && $method === $tenantRelationshipName) {
+            return $this->tenant();
+        }
+
+        // Otherwise, defer to parent
+        return parent::__call($method, $parameters);
     }
 
     /**
@@ -112,3 +173,4 @@ trait HasTenant
         return $query->withoutGlobalScope('tenant');
     }
 }
+
