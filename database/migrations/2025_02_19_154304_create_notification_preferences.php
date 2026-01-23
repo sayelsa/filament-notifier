@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('notifier_preferences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('notification_event_id')->constrained('notifier_events')->cascadeOnDelete();
+            $table->string('event_key')->index(); // References config-based events
             $table->json('channels');
             $table->json('settings')->nullable();
             $table->timestamps();
 
-            $table->unique(['user_id', 'notification_event_id']);
+            $table->unique(['user_id', 'event_key']);
         });
     }
 

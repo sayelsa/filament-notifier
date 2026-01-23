@@ -14,17 +14,12 @@ return new class extends Migration
         Schema::create('notifier_templates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('event_key');
+            $table->string('event_key')->index(); // References config-based events
             $table->string('subject')->nullable();
             $table->text('content');
             $table->json('variables')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-
-            $table->foreign('event_key')
-                ->references('key')
-                ->on('notifier_events')
-                ->onDelete('cascade');
         });
     }
 
