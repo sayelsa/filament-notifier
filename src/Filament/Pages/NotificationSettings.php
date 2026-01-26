@@ -218,6 +218,31 @@ class NotificationSettings extends Page
                     ->label(__('notifier::notifier.pages.settings.channels.from_name'))
                     ->required()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
+                TextInput::make("channels.{$channel->type}.smtp_host")
+                    ->label(__('notifier::notifier.pages.settings.channels.smtp_host'))
+                    ->placeholder('smtp.mailgun.org')
+                    ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
+                TextInput::make("channels.{$channel->type}.smtp_port")
+                    ->label(__('notifier::notifier.pages.settings.channels.smtp_port'))
+                    ->numeric()
+                    ->placeholder('587')
+                    ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
+                Select::make("channels.{$channel->type}.smtp_encryption")
+                    ->label(__('notifier::notifier.pages.settings.channels.smtp_encryption'))
+                    ->options([
+                        'tls' => 'TLS',
+                        'ssl' => 'SSL',
+                        '' => 'None',
+                    ])
+                    ->placeholder('tls')
+                    ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
+                TextInput::make("channels.{$channel->type}.smtp_username")
+                    ->label(__('notifier::notifier.pages.settings.channels.smtp_username'))
+                    ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
+                TextInput::make("channels.{$channel->type}.smtp_password")
+                    ->label(__('notifier::notifier.pages.settings.channels.smtp_password'))
+                    ->password()
+                    ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
             ],
             'slack' => [
                 TextInput::make("channels.{$channel->type}.webhook_url")
