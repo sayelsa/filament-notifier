@@ -21,11 +21,19 @@ class EventChannelConfiguration extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static ?string $navigationLabel = 'Event Channels';
-    protected static ?string $title = 'Event Channel Configuration';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
+    protected static string|null|\UnitEnum $navigationGroup = 'Notifier'; // Keeping group hardcoded "Notifier" as decided
     protected static ?int $navigationSort = 3;
     protected string $view = 'notifier::filament.pages.event-channel-configuration';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('notifier::notifier.pages.event_channels.navigation_label');
+    }
+
+    public function getTitle(): string
+    {
+        return __('notifier::notifier.pages.event_channels.title');
+    }
 
     public ?array $data = [];
 
@@ -113,8 +121,8 @@ class EventChannelConfiguration extends Page implements HasForms
                     ]);
             }
 
-            $sections[] = Section::make($group ?: 'General')
-                ->description('Configure which channels should be used for each event.')
+            $sections[] = Section::make($group ?: __('notifier::notifier.pages.event_channels.sections.general'))
+                ->description(__('notifier::notifier.pages.event_channels.sections.description'))
                 ->schema([
                     ...$fields,
                 ])
@@ -161,8 +169,8 @@ class EventChannelConfiguration extends Page implements HasForms
         }
 
         Notification::make()
-            ->title('Configuration Saved')
-            ->body("Successfully updated channel configuration for {$updated} event(s).")
+            ->title(__('notifier::notifier.pages.event_channels.notifications.saved'))
+            ->body(__('notifier::notifier.pages.event_channels.notifications.saved_body', ['count' => $updated]))
             ->success()
             ->send();
     }

@@ -24,8 +24,8 @@ class NotificationEngagementStats extends BaseWidget
 
         if (!($analytics['enabled'] ?? config('notifier.settings.analytics.enabled', true))) {
             return [
-                Stat::make('Analytics Disabled', '')
-                    ->description('Enable analytics in settings to view engagement metrics')
+                Stat::make(__('notifier::notifier.widgets.engagement.analytics_disabled'), '')
+                    ->description(__('notifier::notifier.widgets.engagement.enable_in_settings'))
                     ->color('gray'),
             ];
         }
@@ -43,30 +43,30 @@ class NotificationEngagementStats extends BaseWidget
         $clickThroughRate = $totalOpened > 0 ? round(($totalClicked / $totalOpened) * 100, 1) : 0;
 
         return [
-            Stat::make('Total Opens', number_format($totalOpens))
-                ->description($totalOpened . ' unique opens')
+            Stat::make(__('notifier::notifier.widgets.engagement.total_opens'), number_format($totalOpens))
+                ->description(__('notifier::notifier.widgets.engagement.unique_opens', ['count' => $totalOpened]))
                 ->descriptionIcon('heroicon-m-eye')
                 ->color('info')
                 ->chart($this->getOpensChartData()),
 
-            Stat::make('Open Rate', $openRate . '%')
-                ->description($totalOpened . ' of ' . $totalSent . ' emails opened')
+            Stat::make(__('notifier::notifier.widgets.engagement.open_rate'), $openRate . '%')
+                ->description(__('notifier::notifier.widgets.engagement.emails_opened', ['opened' => $totalOpened, 'sent' => $totalSent]))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success'),
 
-            Stat::make('Total Clicks', number_format($totalClicks))
-                ->description($totalClicked . ' unique clicks')
+            Stat::make(__('notifier::notifier.widgets.engagement.total_clicks'), number_format($totalClicks))
+                ->description(__('notifier::notifier.widgets.engagement.unique_clicks', ['count' => $totalClicked]))
                 ->descriptionIcon('heroicon-m-cursor-arrow-rays')
                 ->color('warning')
                 ->chart($this->getClicksChartData()),
 
-            Stat::make('Click Rate', $clickRate . '%')
-                ->description($totalClicked . ' of ' . $totalSent . ' emails clicked')
+            Stat::make(__('notifier::notifier.widgets.engagement.click_rate'), $clickRate . '%')
+                ->description(__('notifier::notifier.widgets.engagement.emails_clicked', ['clicked' => $totalClicked, 'sent' => $totalSent]))
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('warning'),
 
-            Stat::make('Click-Through Rate', $clickThroughRate . '%')
-                ->description('Clicks per open')
+            Stat::make(__('notifier::notifier.widgets.engagement.click_through_rate'), $clickThroughRate . '%')
+                ->description(__('notifier::notifier.widgets.engagement.clicks_per_open'))
                 ->descriptionIcon('heroicon-m-arrow-path')
                 ->color('success'),
         ];

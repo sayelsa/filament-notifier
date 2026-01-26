@@ -21,12 +21,15 @@ class NotificationTable
         return $table
             ->columns([
                 TextColumn::make('template.name')
+                    ->label(__('notifier::notifier.resources.notification.fields.template'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
+                    ->label(__('notifier::notifier.resources.notification.fields.user'))
                     ->searchable()
                     ->sortable(),
                 BadgeColumn::make('channel')
+                    ->label(__('notifier::notifier.resources.notification.fields.channel'))
                     ->colors([
                         'primary' => 'email',
                         'success' => 'sms',
@@ -34,18 +37,28 @@ class NotificationTable
                         'danger' => 'push',
                     ]),
                 TextColumn::make('subject')
+                    ->label(__('notifier::notifier.resources.notification.fields.subject'))
                     ->limit(50)
                     ->searchable(),
                 BadgeColumn::make('status')
+                    ->label(__('notifier::notifier.resources.notification.fields.status'))
                     ->colors([
                         'warning' => 'pending',
                         'success' => 'sent',
                         'danger' => 'failed',
-                    ]),
+                    ])
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'pending' => __('notifier::notifier.resources.notification.status.pending'),
+                        'sent' => __('notifier::notifier.resources.notification.status.sent'),
+                        'failed' => __('notifier::notifier.resources.notification.status.failed'),
+                        default => $state,
+                    }),
                 TextColumn::make('scheduled_at')
+                    ->label(__('notifier::notifier.resources.notification.fields.scheduled_at'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('sent_at')
+                    ->label(__('notifier::notifier.resources.notification.fields.sent_at'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -54,6 +67,7 @@ class NotificationTable
             ])
             ->filters([
                 SelectFilter::make('channel')
+                    ->label(__('notifier::notifier.resources.notification.fields.channel'))
                     ->options([
                         'email' => 'Email',
                         'sms' => 'SMS',
@@ -61,10 +75,11 @@ class NotificationTable
                         'push' => 'Push Notification',
                     ]),
                 SelectFilter::make('status')
+                    ->label(__('notifier::notifier.resources.notification.fields.status'))
                     ->options([
-                        'pending' => 'Pending',
-                        'sent' => 'Sent',
-                        'failed' => 'Failed',
+                        'pending' => __('notifier::notifier.resources.notification.status.pending'),
+                        'sent' => __('notifier::notifier.resources.notification.status.sent'),
+                        'failed' => __('notifier::notifier.resources.notification.status.failed'),
                     ]),
                 Filter::make('scheduled_at')
                     ->form([

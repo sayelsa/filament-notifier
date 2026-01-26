@@ -23,10 +23,18 @@ class NotificationSettings extends Page
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cog-6-tooth';
     protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
-    protected static ?string $title = 'Notification Settings';
-    protected static ?string $navigationLabel = 'Settings';
     protected static ?int $navigationSort = 1;
     protected string $view = 'notifier::pages.settings';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('notifier::notifier.pages.settings.navigation_label');
+    }
+
+    public function getTitle(): string
+    {
+        return __('notifier::notifier.pages.settings.title');
+    }
 
     public array $data;
 
@@ -78,90 +86,90 @@ class NotificationSettings extends Page
     {
         $channels = NotificationChannel::all();
         $tabs = [
-            Tab::make('General')
+            Tab::make(__('notifier::notifier.pages.settings.tabs.general'))
                 ->icon('heroicon-o-cog')
                 ->schema([
                     Toggle::make('enabled')
-                        ->label('Enable Notifications')
+                        ->label(__('notifier::notifier.pages.settings.fields.enable_notifications'))
                         ->default(true),
                     TextInput::make('queue_name')
-                        ->label('Queue Name')
+                        ->label(__('notifier::notifier.pages.settings.fields.queue_name'))
                         ->default('default')
                         ->required(),
                     Select::make('default_channel')
-                        ->label('Default Channel')
+                        ->label(__('notifier::notifier.pages.settings.fields.default_channel'))
                         ->options(NotificationChannel::pluck('title', 'type')->toArray())
                         ->required(),
                 ]),
-            Tab::make('Preferences')
+            Tab::make(__('notifier::notifier.pages.settings.tabs.preferences'))
                 ->icon('heroicon-o-user-circle')
                 ->schema([
-                    Section::make('User Preferences')
-                        ->description('Configure default user notification preferences')
+                    Section::make(__('notifier::notifier.pages.settings.sections.user_preferences.heading'))
+                        ->description(__('notifier::notifier.pages.settings.sections.user_preferences.description'))
                         ->schema([
                             Toggle::make('preferences.enabled')
-                                ->label('Enable User Preferences')
+                                ->label(__('notifier::notifier.pages.settings.preferences.enable'))
                                 ->default(true),
                             Select::make('preferences.default_channels')
-                                ->label('Default Channels')
+                                ->label(__('notifier::notifier.pages.settings.preferences.default_channels'))
                                 ->multiple()
                                 ->options(NotificationChannel::pluck('title', 'type')->toArray())
                                 ->default(['email'])
                                 ->required(),
                             Toggle::make('preferences.allow_override')
-                                ->label('Allow Users to Override Preferences')
+                                ->label(__('notifier::notifier.pages.settings.preferences.allow_override.label'))
                                 ->default(true)
-                                ->helperText('If enabled, users can customize their notification preferences'),
+                                ->helperText(__('notifier::notifier.pages.settings.preferences.allow_override.helper_text')),
                         ]),
                 ]),
-            Tab::make('Analytics')
+            Tab::make(__('notifier::notifier.pages.settings.tabs.analytics'))
                 ->icon('heroicon-o-chart-bar')
                 ->schema([
-                    Section::make('Analytics Settings')
-                        ->description('Configure notification analytics and tracking')
+                    Section::make(__('notifier::notifier.pages.settings.sections.analytics.heading'))
+                        ->description(__('notifier::notifier.pages.settings.sections.analytics.description'))
                         ->schema([
                             Toggle::make('analytics.enabled')
-                                ->label('Enable Analytics')
+                                ->label(__('notifier::notifier.pages.settings.analytics.enable'))
                                 ->default(true),
                             Toggle::make('analytics.track_opens')
-                                ->label('Track Email Opens')
+                                ->label(__('notifier::notifier.pages.settings.analytics.track_opens'))
                                 ->default(true)
                                 ->visible(fn(Get $get): bool => $get('analytics.enabled')),
                             Toggle::make('analytics.track_clicks')
-                                ->label('Track Link Clicks')
+                                ->label(__('notifier::notifier.pages.settings.analytics.track_clicks'))
                                 ->default(true)
                                 ->visible(fn(Get $get): bool => $get('analytics.enabled')),
                             TextInput::make('analytics.retention_days')
-                                ->label('Data Retention (Days)')
+                                ->label(__('notifier::notifier.pages.settings.analytics.retention_days'))
                                 ->numeric()
                                 ->default(90)
                                 ->required()
                                 ->visible(fn(Get $get): bool => $get('analytics.enabled')),
                         ]),
                 ]),
-            Tab::make('Rate Limiting')
+            Tab::make(__('notifier::notifier.pages.settings.tabs.rate_limiting'))
                 ->icon('heroicon-o-clock')
                 ->schema([
-                    Section::make('Rate Limiting Settings')
-                        ->description('Configure rate limits for notifications to prevent abuse')
+                    Section::make(__('notifier::notifier.pages.settings.sections.rate_limiting.heading'))
+                        ->description(__('notifier::notifier.pages.settings.sections.rate_limiting.description'))
                         ->schema([
                             Toggle::make('rate_limiting.enabled')
-                                ->label('Enable Rate Limiting')
+                                ->label(__('notifier::notifier.pages.settings.rate_limiting.enable'))
                                 ->default(true),
                             TextInput::make('rate_limiting.max_per_minute')
-                                ->label('Max Per Minute')
+                                ->label(__('notifier::notifier.pages.settings.rate_limiting.max_per_minute'))
                                 ->numeric()
                                 ->default(60)
                                 ->required()
                                 ->visible(fn(Get $get): bool => $get('rate_limiting.enabled')),
                             TextInput::make('rate_limiting.max_per_hour')
-                                ->label('Max Per Hour')
+                                ->label(__('notifier::notifier.pages.settings.rate_limiting.max_per_hour'))
                                 ->numeric()
                                 ->default(1000)
                                 ->required()
                                 ->visible(fn(Get $get): bool => $get('rate_limiting.enabled')),
                             TextInput::make('rate_limiting.max_per_day')
-                                ->label('Max Per Day')
+                                ->label(__('notifier::notifier.pages.settings.rate_limiting.max_per_day'))
                                 ->numeric()
                                 ->default(10000)
                                 ->required()
@@ -190,39 +198,39 @@ class NotificationSettings extends Page
     {
         $schema = [
             Toggle::make("channels.{$channel->type}.enabled")
-                ->label("Enable {$channel->title}"),
+                ->label(__('notifier::notifier.pages.settings.channels.enable', ['channel' => $channel->title])),
         ];
 
         $fields = match ($channel->type) {
             'email' => [
                 TextInput::make("channels.{$channel->type}.from_address")
-                    ->label('From Address')
+                    ->label(__('notifier::notifier.pages.settings.channels.from_address'))
                     ->email()
                     ->required()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.from_name")
-                    ->label('From Name')
+                    ->label(__('notifier::notifier.pages.settings.channels.from_name'))
                     ->required()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
             ],
             'slack' => [
                 TextInput::make("channels.{$channel->type}.webhook_url")
-                    ->label('Webhook URL')
+                    ->label(__('notifier::notifier.pages.settings.channels.webhook_url'))
                     ->url()
                     ->required()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.channel")
-                    ->label('Slack Channel')
+                    ->label(__('notifier::notifier.pages.settings.channels.channel'))
                     ->default('#notifications')
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.username")
-                    ->label('Bot Username')
+                    ->label(__('notifier::notifier.pages.settings.channels.username'))
                     ->default('Notification Bot')
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
             ],
             'sms' => [
                 Select::make("channels.{$channel->type}.provider")
-                    ->label('SMS Provider')
+                    ->label(__('notifier::notifier.pages.settings.channels.provider'))
                     ->options([
                         'twilio' => 'Twilio',
                         'vonage' => 'Vonage (Nexmo)',
@@ -231,55 +239,55 @@ class NotificationSettings extends Page
                     ->required()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.twilio_account_sid")
-                    ->label('Twilio Account SID')
+                    ->label(__('notifier::notifier.pages.settings.channels.twilio_account_sid'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && $get("channels.{$channel->type}.provider") === 'twilio'),
                 TextInput::make("channels.{$channel->type}.twilio_auth_token")
-                    ->label('Twilio Auth Token')
+                    ->label(__('notifier::notifier.pages.settings.channels.twilio_auth_token'))
                     ->password()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && $get("channels.{$channel->type}.provider") === 'twilio'),
                 TextInput::make("channels.{$channel->type}.twilio_phone_number")
-                    ->label('Twilio Phone Number')
+                    ->label(__('notifier::notifier.pages.settings.channels.twilio_phone_number'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && $get("channels.{$channel->type}.provider") === 'twilio'),
                 TextInput::make("channels.{$channel->type}.api_url")
-                    ->label('API URL')
+                    ->label(__('notifier::notifier.pages.settings.channels.api_url'))
                     ->url()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && $get("channels.{$channel->type}.provider") === 'generic'),
                 TextInput::make("channels.{$channel->type}.api_key")
-                    ->label('API Key')
+                    ->label(__('notifier::notifier.pages.settings.channels.api_key'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && ($get("channels.{$channel->type}.provider") === 'generic' || $get("channels.{$channel->type}.provider") === 'vonage')),
                 TextInput::make("channels.{$channel->type}.api_secret")
-                    ->label('API Secret')
+                    ->label(__('notifier::notifier.pages.settings.channels.api_secret'))
                     ->password()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled") && ($get("channels.{$channel->type}.provider") === 'generic' || $get("channels.{$channel->type}.provider") === 'vonage')),
             ],
             'push' => [
                 TextInput::make("channels.{$channel->type}.firebase_server_key")
-                    ->label('Firebase Server Key')
+                    ->label(__('notifier::notifier.pages.settings.channels.firebase_server_key'))
                     ->password()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.firebase_project_id")
-                    ->label('Firebase Project ID')
+                    ->label(__('notifier::notifier.pages.settings.channels.firebase_project_id'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
             ],
             'discord' => [
                 TextInput::make("channels.{$channel->type}.webhook_url")
-                    ->label('Discord Webhook URL')
+                    ->label(__('notifier::notifier.pages.settings.channels.discord_webhook_url.label'))
                     ->url()
                     ->required()
-                    ->helperText('Get this from your Discord server settings > Integrations > Webhooks')
+                    ->helperText(__('notifier::notifier.pages.settings.channels.discord_webhook_url.helper_text'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.username")
-                    ->label('Bot Username')
-                    ->helperText('Optional: Custom username for the webhook')
+                    ->label(__('notifier::notifier.pages.settings.channels.discord_username.label'))
+                    ->helperText(__('notifier::notifier.pages.settings.channels.discord_username.helper_text'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.avatar_url")
-                    ->label('Avatar URL')
+                    ->label(__('notifier::notifier.pages.settings.channels.avatar_url.label'))
                     ->url()
-                    ->helperText('Optional: URL for the webhook avatar')
+                    ->helperText(__('notifier::notifier.pages.settings.channels.avatar_url.helper_text'))
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
                 TextInput::make("channels.{$channel->type}.color")
-                    ->label('Embed Color')
-                    ->helperText('Optional: Decimal color code for embed (e.g., 3447003 for blue)')
+                    ->label(__('notifier::notifier.pages.settings.channels.embed_color.label'))
+                    ->helperText(__('notifier::notifier.pages.settings.channels.embed_color.helper_text'))
                     ->numeric()
                     ->visible(fn(Get $get): bool => $get("channels.{$channel->type}.enabled")),
             ],
@@ -332,7 +340,7 @@ class NotificationSettings extends Page
         }
 
         Notification::make()
-            ->title('Settings saved successfully')
+            ->title(__('notifier::notifier.pages.settings.notifications.saved'))
             ->success()
             ->send();
     }

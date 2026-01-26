@@ -20,20 +20,20 @@ class NotificationChannelForm
 
         return $schema
             ->components([
-                Section::make('Channel Information')
-                    ->description('Basic information about the notification channel')
+                Section::make(__('notifier::notifier.resources.channel.sections.information.heading'))
+                    ->description(__('notifier::notifier.resources.channel.sections.information.description'))
                     ->schema([
                         TextInput::make('title')
-                            ->label('Channel Title')
-                            ->helperText('A friendly display name for this channel (e.g., "Email", "Slack", "SMS")')
+                            ->label(__('notifier::notifier.resources.channel.fields.title.label'))
+                            ->helperText(__('notifier::notifier.resources.channel.fields.title.helper_text'))
                             ->placeholder('Email')
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
 
                         Select::make('type')
-                            ->label('Channel Type')
-                            ->helperText('The unique identifier for this channel type. This must match one of the supported channel types.')
+                            ->label(__('notifier::notifier.resources.channel.fields.type.label'))
+                            ->helperText(__('notifier::notifier.resources.channel.fields.type.helper_text'))
                             ->options($enabledTypes)
                             ->required()
                             ->unique(ignoreRecord: true)
@@ -42,36 +42,36 @@ class NotificationChannelForm
                             ->columnSpanFull(),
 
                         TextInput::make('icon')
-                            ->label('Icon')
-                            ->helperText('Heroicon class name (e.g., heroicon-o-envelope, heroicon-o-chat-bubble-left-right). Leave empty to use default icon for channel type.')
+                            ->label(__('notifier::notifier.resources.channel.fields.icon.label'))
+                            ->helperText(__('notifier::notifier.resources.channel.fields.icon.helper_text'))
                             ->placeholder('heroicon-o-envelope')
                             ->maxLength(255)
                             ->columnSpanFull(),
 
                         Toggle::make('is_active')
-                            ->label('Active')
-                            ->helperText('Enable or disable this channel. Inactive channels will not be used for sending notifications.')
+                            ->label(__('notifier::notifier.resources.channel.fields.is_active.label'))
+                            ->helperText(__('notifier::notifier.resources.channel.fields.is_active.helper_text'))
                             ->default(true)
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
 
-                Section::make('Channel Settings')
-                    ->description('Configure channel-specific settings. These settings will be used when sending notifications through this channel.')
+                Section::make(__('notifier::notifier.resources.channel.sections.settings.heading'))
+                    ->description(__('notifier::notifier.resources.channel.sections.settings.description'))
                     ->schema([
                         KeyValue::make('settings')
-                            ->label('Settings')
-                            ->keyLabel('Setting Name')
-                            ->valueLabel('Setting Value')
-                            ->helperText('Add key-value pairs for channel-specific configuration. Examples: For email, you might add "from_address" and "from_name". For Slack, add "webhook_url".')
+                            ->label(__('notifier::notifier.resources.channel.fields.settings.label'))
+                            ->keyLabel(__('notifier::notifier.resources.channel.fields.settings.key_label'))
+                            ->valueLabel(__('notifier::notifier.resources.channel.fields.settings.value_label'))
+                            ->helperText(__('notifier::notifier.resources.channel.fields.settings.helper_text'))
                             ->reorderable()
                             ->columnSpanFull()
                             ->addable(true)
                             ->deletable(true),
                     ]),
 
-                Section::make('Setting Examples')
-                    ->description('Common settings for different channel types. Click to expand and see examples.')
+                Section::make(__('notifier::notifier.resources.channel.sections.examples.heading'))
+                    ->description(__('notifier::notifier.resources.channel.sections.examples.description'))
                     ->collapsible()
                     ->collapsed()
                     ->schema(static::getSettingExamples($channelService)),
@@ -84,7 +84,7 @@ class NotificationChannelForm
 
         if ($channelService->isTypeEnabled('email')) {
             $examples[] = Textarea::make('email_example')
-                ->label('Email Channel Settings')
+                ->label(__('notifier::notifier.resources.channel.fields.examples.email'))
                 ->default("from_address: noreply@example.com\nfrom_name: Your App Name")
                 ->disabled()
                 ->dehydrated(false)
@@ -94,7 +94,7 @@ class NotificationChannelForm
 
         if ($channelService->isTypeEnabled('slack')) {
             $examples[] = Textarea::make('slack_example')
-                ->label('Slack Channel Settings')
+                ->label(__('notifier::notifier.resources.channel.fields.examples.slack'))
                 ->default("webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL\nchannel: #notifications\nusername: Notification Bot")
                 ->disabled()
                 ->dehydrated(false)
@@ -104,7 +104,7 @@ class NotificationChannelForm
 
         if ($channelService->isTypeEnabled('sms')) {
             $examples[] = Textarea::make('sms_example')
-                ->label('SMS Channel Settings (Twilio)')
+                ->label(__('notifier::notifier.resources.channel.fields.examples.sms'))
                 ->default("twilio_account_sid: YOUR_ACCOUNT_SID\ntwilio_auth_token: YOUR_AUTH_TOKEN\ntwilio_phone_number: +1234567890")
                 ->disabled()
                 ->dehydrated(false)
@@ -114,7 +114,7 @@ class NotificationChannelForm
 
         if ($channelService->isTypeEnabled('push')) {
             $examples[] = Textarea::make('push_example')
-                ->label('Push Channel Settings (Firebase)')
+                ->label(__('notifier::notifier.resources.channel.fields.examples.push'))
                 ->default("firebase_server_key: YOUR_SERVER_KEY\nfirebase_project_id: YOUR_PROJECT_ID")
                 ->disabled()
                 ->dehydrated(false)
@@ -124,7 +124,7 @@ class NotificationChannelForm
 
         if ($channelService->isTypeEnabled('discord')) {
             $examples[] = Textarea::make('discord_example')
-                ->label('Discord Channel Settings')
+                ->label(__('notifier::notifier.resources.channel.fields.examples.discord'))
                 ->default("webhook_url: https://discord.com/api/webhooks/YOUR/WEBHOOK/URL\nusername: Notification Bot\navatar_url: https://example.com/avatar.png\ncolor: 3447003")
                 ->disabled()
                 ->dehydrated(false)

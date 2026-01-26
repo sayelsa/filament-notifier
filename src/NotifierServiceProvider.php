@@ -45,7 +45,8 @@ class NotifierServiceProvider extends PackageServiceProvider
                 NotifierSeedCommand::class,
                 SendTestNotificationCommand::class,
                 CleanupAnalyticsCommand::class,
-            ]);
+            ])
+            ->hasTranslations();
     }
 
     public function packageRegistered(): void

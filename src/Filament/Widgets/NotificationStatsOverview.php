@@ -32,29 +32,29 @@ class NotificationStatsOverview extends BaseWidget
         $recentNotifications = $this->getRecentNotificationsData();
 
         return [
-            Stat::make('Total Notifications', $totalNotifications)
-                ->description('All time notifications')
+            Stat::make(__('notifier::notifier.widgets.overview.total'), $totalNotifications)
+                ->description(__('notifier::notifier.widgets.overview.all_time'))
                 ->descriptionIcon('heroicon-m-envelope')
                 ->chart($recentNotifications)
                 ->color('success'),
 
-            Stat::make('Success Rate', $successRate . '%')
-                ->description($sentNotifications . ' of ' . $totalNotifications . ' sent successfully')
+            Stat::make(__('notifier::notifier.widgets.overview.success_rate'), $successRate . '%')
+                ->description(__('notifier::notifier.widgets.overview.sent_successfully', ['sent' => $sentNotifications, 'total' => $totalNotifications]))
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Pending Notifications', $pendingNotifications)
-                ->description('Awaiting delivery')
+            Stat::make(__('notifier::notifier.widgets.overview.pending'), $pendingNotifications)
+                ->description(__('notifier::notifier.widgets.overview.awaiting'))
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
-            Stat::make('Failed Notifications', $failedNotifications)
-                ->description('Failed to deliver')
+            Stat::make(__('notifier::notifier.widgets.overview.failed'), $failedNotifications)
+                ->description(__('notifier::notifier.widgets.overview.failed_delivery'))
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
 
-            Stat::make('Active Channels', $activeChannels)
-                ->description('Enabled notification channels')
+            Stat::make(__('notifier::notifier.widgets.overview.active_channels'), $activeChannels)
+                ->description(__('notifier::notifier.widgets.overview.enabled_channels'))
                 ->descriptionIcon('heroicon-m-bolt')
                 ->color('info'),
         ];

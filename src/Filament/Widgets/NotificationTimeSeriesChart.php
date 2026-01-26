@@ -8,9 +8,13 @@ use Usamamuneerchaudhary\Notifier\Models\Notification;
 
 class NotificationTimeSeriesChart extends ChartWidget
 {
-    protected ?string $heading = 'Notifications Over Time';
     protected static ?int $sort = 3;
     protected ?string $pollingInterval = '30s';
+
+    public function getHeading(): ?string
+    {
+        return __('notifier::notifier.widgets.time_series.heading');
+    }
 
 
     public static function canView(): bool
@@ -38,21 +42,21 @@ class NotificationTimeSeriesChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Sent',
+                    'label' => __('notifier::notifier.widgets.performance.sent'),
                     'data' => $sentData,
                     'backgroundColor' => 'rgba(59, 130, 246, 0.5)',
                     'borderColor' => 'rgb(59, 130, 246)',
                     'fill' => false,
                 ],
                 [
-                    'label' => 'Opened',
+                    'label' => __('notifier::notifier.widgets.performance.opened'),
                     'data' => $openedData,
                     'backgroundColor' => 'rgba(16, 185, 129, 0.5)',
                     'borderColor' => 'rgb(16, 185, 129)',
                     'fill' => false,
                 ],
                 [
-                    'label' => 'Clicked',
+                    'label' => __('notifier::notifier.widgets.performance.clicked'),
                     'data' => $clickedData,
                     'backgroundColor' => 'rgba(245, 158, 11, 0.5)',
                     'borderColor' => 'rgb(245, 158, 11)',

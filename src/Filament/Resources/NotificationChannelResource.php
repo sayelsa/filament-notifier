@@ -15,8 +15,23 @@ class NotificationChannelResource extends Resource
 {
     protected static ?string $model = NotificationChannel::class;
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-envelope';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 3;
+
+    public static function getModelLabel(): string
+    {
+        return __('notifier::notifier.resources.channel.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('notifier::notifier.resources.channel.plural_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Notifier';
+    }
+
     
     // Use the 'tenant' relationship from HasTenant trait for Filament tenancy
     protected static ?string $tenantOwnershipRelationshipName = 'tenant';

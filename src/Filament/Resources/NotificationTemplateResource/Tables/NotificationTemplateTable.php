@@ -21,11 +21,11 @@ class NotificationTemplateTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->label('Template Name')
+                    ->label(__('notifier::notifier.resources.template.fields.name.label'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('event_key')
-                    ->label('Event')
+                    ->label(__('notifier::notifier.resources.template.fields.event_key.label'))
                     ->formatStateUsing(function ($state) {
                         $eventService = app(EventService::class);
                         $event = $eventService->get($state);

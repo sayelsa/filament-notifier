@@ -15,8 +15,22 @@ class NotificationTemplateResource extends Resource
 {
     protected static ?string $model = NotificationTemplate::class;
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-document-text';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 4;
+
+    public static function getModelLabel(): string
+    {
+        return __('notifier::notifier.resources.template.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('notifier::notifier.resources.template.plural_label');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Notifier';
+    }
     
     // Use the 'tenant' relationship from HasTenant trait for Filament tenancy
     protected static ?string $tenantOwnershipRelationshipName = 'tenant';

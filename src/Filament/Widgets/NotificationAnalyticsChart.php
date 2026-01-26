@@ -9,9 +9,13 @@ use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
 
 class NotificationAnalyticsChart extends ChartWidget
 {
-    protected ?string $heading = 'Engagement Analytics (Last 7 Days)';
     protected static ?int $sort = 4;
     protected ?string $pollingInterval = '30s';
+
+    public function getHeading(): ?string
+    {
+        return __('notifier::notifier.widgets.analytics.heading');
+    }
 
     public static function canView(): bool
     {
@@ -52,21 +56,21 @@ class NotificationAnalyticsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Opens',
+                    'label' => __('notifier::notifier.widgets.analytics.opens'),
                     'data' => $opensData,
                     'backgroundColor' => 'rgba(16, 185, 129, 0.5)',
                     'borderColor' => 'rgb(16, 185, 129)',
                     'yAxisID' => 'y',
                 ],
                 [
-                    'label' => 'Clicks',
+                    'label' => __('notifier::notifier.widgets.analytics.clicks'),
                     'data' => $clicksData,
                     'backgroundColor' => 'rgba(245, 158, 11, 0.5)',
                     'borderColor' => 'rgb(245, 158, 11)',
                     'yAxisID' => 'y',
                 ],
                 [
-                    'label' => 'Open Rate %',
+                    'label' => __('notifier::notifier.widgets.analytics.open_rate'),
                     'data' => $openRateData,
                     'type' => 'line',
                     'borderColor' => 'rgb(59, 130, 246)',
@@ -75,7 +79,7 @@ class NotificationAnalyticsChart extends ChartWidget
                     'fill' => false,
                 ],
                 [
-                    'label' => 'Click Rate %',
+                    'label' => __('notifier::notifier.widgets.analytics.click_rate'),
                     'data' => $clickRateData,
                     'type' => 'line',
                     'borderColor' => 'rgb(239, 68, 68)',

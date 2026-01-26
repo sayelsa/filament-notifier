@@ -17,12 +17,12 @@ class NotificationTemplateForm
     {
         return $schema
             ->components([
-                Section::make('Template Information')
-                    ->description('Basic information about the notification template')
+                Section::make(__('notifier::notifier.resources.template.sections.information.heading'))
+                    ->description(__('notifier::notifier.resources.template.sections.information.description'))
                     ->schema([
                         TextInput::make('name')
-                            ->label('Template Name')
-                            ->helperText('A friendly display name for this template (e.g., "Welcome Email", "Order Confirmation"). This is also used as the unique identifier to reference the template in code.')
+                            ->label(__('notifier::notifier.resources.template.fields.name.label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.name.helper_text'))
                             ->placeholder('welcome-email')
                             ->required()
                             ->unique(ignoreRecord: true)
@@ -30,62 +30,62 @@ class NotificationTemplateForm
                             ->columnSpanFull(),
 
                         Select::make('event_key')
-                            ->label('Linked Event')
-                            ->helperText('Link this template to a specific notification event. This is required and helps organize templates. The template will be used when this event is triggered.')
+                            ->label(__('notifier::notifier.resources.template.fields.event_key.label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.event_key.helper_text'))
                             ->options(fn() => app(EventService::class)->options())
                             ->searchable()
                             ->required()
                             ->columnSpanFull(),
 
                         TextInput::make('subject')
-                            ->label('Subject Line')
-                            ->helperText('The subject line for email notifications. For SMS/Slack/Discord, this may be used as a title. Use {{variable}} for dynamic content.')
+                            ->label(__('notifier::notifier.resources.template.fields.subject.label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.subject.helper_text'))
                             ->placeholder('Welcome to {{app_name}}, {{name}}!')
                             ->required()
                             ->maxLength(255)
                             ->columnSpanFull(),
 
                         Toggle::make('is_active')
-                            ->label('Active')
-                            ->helperText('Enable or disable this template. Inactive templates will not be used for sending notifications.')
+                            ->label(__('notifier::notifier.resources.template.fields.is_active.label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.is_active.helper_text'))
                             ->default(true)
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
 
-                Section::make('Template Content')
-                    ->description('The actual content of the notification template')
+                Section::make(__('notifier::notifier.resources.template.sections.content.heading'))
+                    ->description(__('notifier::notifier.resources.template.sections.content.description'))
                     ->schema([
                         Textarea::make('content')
-                            ->label('Template Content')
-                            ->helperText('The main content of your notification. Use {{variable}} syntax to insert dynamic values. Example: "Hi {{name}}, welcome to {{app_name}}!"')
+                            ->label(__('notifier::notifier.resources.template.fields.content.label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.content.helper_text'))
                             ->placeholder("Hi {{name}},\n\nWelcome to {{app_name}}! We're excited to have you on board.\n\nBest regards,\nThe {{app_name}} Team")
                             ->required()
                             ->rows(12)
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Template Variables')
-                    ->description('Define the variables that can be used in this template. These help document what data should be passed when sending notifications.')
+                Section::make(__('notifier::notifier.resources.template.sections.variables.heading'))
+                    ->description(__('notifier::notifier.resources.template.sections.variables.description'))
                     ->schema([
                         KeyValue::make('variables')
-                            ->label('Variables')
-                            ->keyLabel('Variable Name')
-                            ->valueLabel('Description')
-                            ->helperText('Document the variables used in your template. Key should match the variable name (without {{}}), value should describe what it represents. Example: name → "User\'s full name", app_name → "Application name"')
+                            ->label(__('notifier::notifier.resources.template.fields.variables.label'))
+                            ->keyLabel(__('notifier::notifier.resources.template.fields.variables.key_label'))
+                            ->valueLabel(__('notifier::notifier.resources.template.fields.variables.value_label'))
+                            ->helperText(__('notifier::notifier.resources.template.fields.variables.helper_text'))
                             ->addable(true)
                             ->deletable(true)
                             ->reorderable()
                             ->columnSpanFull(),
                     ]),
 
-                Section::make('Template Examples')
-                    ->description('Example templates for different use cases. Click to expand.')
+                Section::make(__('notifier::notifier.resources.template.sections.examples.heading'))
+                    ->description(__('notifier::notifier.resources.template.sections.examples.description'))
                     ->collapsible()
                     ->collapsed()
                     ->schema([
                         Textarea::make('email_example')
-                            ->label('Email Template Example')
+                            ->label(__('notifier::notifier.resources.template.fields.examples.email'))
                             ->default("Subject: Welcome to {{app_name}}, {{name}}!\n\nContent:\nHi {{name}},\n\nWelcome to {{app_name}}! We're excited to have you on board.\n\nYour account has been created successfully. You can now log in using:\nEmail: {{email}}\n\nBest regards,\nThe {{app_name}} Team")
                             ->disabled()
                             ->dehydrated(false)
@@ -93,7 +93,7 @@ class NotificationTemplateForm
                             ->columnSpanFull(),
 
                         Textarea::make('sms_example')
-                            ->label('SMS Template Example')
+                            ->label(__('notifier::notifier.resources.template.fields.examples.sms'))
                             ->default("Subject: Order Confirmation\n\nContent:\nHi {{name}}, your order #{{order_number}} has been confirmed. Total: {{amount}}. Track at {{tracking_url}}")
                             ->disabled()
                             ->dehydrated(false)
@@ -101,7 +101,7 @@ class NotificationTemplateForm
                             ->columnSpanFull(),
 
                         Textarea::make('slack_example')
-                            ->label('Slack Template Example')
+                            ->label(__('notifier::notifier.resources.template.fields.examples.slack'))
                             ->default("Subject: New Project Created\n\nContent:\n🎉 New project created!\n\nProject: {{project_name}}\nCreated by: {{user_name}}\nView: {{project_url}}")
                             ->disabled()
                             ->dehydrated(false)
@@ -109,7 +109,7 @@ class NotificationTemplateForm
                             ->columnSpanFull(),
 
                         Textarea::make('discord_example')
-                            ->label('Discord Template Example')
+                            ->label(__('notifier::notifier.resources.template.fields.examples.discord'))
                             ->default("Subject: New Project Created\n\nContent:\n🎉 New project created!\n\nProject: {{project_name}}\nCreated by: {{user_name}}\nView: {{project_url}}")
                             ->disabled()
                             ->dehydrated(false)

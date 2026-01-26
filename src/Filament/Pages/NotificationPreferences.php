@@ -23,11 +23,19 @@ class NotificationPreferences extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-bell';
-    protected static ?string $navigationLabel = 'Notification Preferences';
-    protected static ?string $title = 'Notification Preferences';
     protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 6;
     protected string $view = 'notifier::filament.pages.notification-preferences';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('notifier::notifier.pages.preferences.navigation_label');
+    }
+
+    public function getTitle(): string
+    {
+        return __('notifier::notifier.pages.preferences.title');
+    }
 
     public ?array $data = [];
 
@@ -109,7 +117,7 @@ class NotificationPreferences extends Page implements HasForms
                     ]);
             }
 
-            $sections[] = Section::make($group ?: 'General')
+            $sections[] = Section::make($group ?: __('notifier::notifier.pages.preferences.sections.general'))
                 ->schema([
                     Grid::make([
                         'default' => 1,
@@ -145,8 +153,8 @@ class NotificationPreferences extends Page implements HasForms
         $preferences = NotificationSetting::getPreferences();
         if (!($preferences['allow_override'] ?? config('notifier.settings.preferences.allow_override', true))) {
             Notification::make()
-                ->title('Preferences Disabled')
-                ->body('User preference override is disabled by administrator.')
+                ->title(__('notifier::notifier.pages.preferences.notifications.disabled'))
+                ->body(__('notifier::notifier.pages.preferences.notifications.disabled_body'))
                 ->danger()
                 ->send();
 
@@ -194,8 +202,8 @@ class NotificationPreferences extends Page implements HasForms
         }
 
         Notification::make()
-            ->title('Preferences Saved')
-            ->body("Successfully updated {$updated} notification preference(s).")
+            ->title(__('notifier::notifier.pages.preferences.notifications.saved'))
+            ->body(__('notifier::notifier.pages.preferences.notifications.saved_body', ['count' => $updated]))
             ->success()
             ->send();
     }

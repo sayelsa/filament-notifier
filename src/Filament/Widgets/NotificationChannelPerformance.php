@@ -10,9 +10,13 @@ use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotificationChannelPerformance extends ChartWidget
 {
-    protected ?string $heading = 'Channel Performance';
     protected static ?int $sort = 5;
     protected ?string $pollingInterval = '30s';
+
+    public function getHeading(): ?string
+    {
+        return __('notifier::notifier.widgets.performance.heading');
+    }
 
     public static function canView(): bool
     {
@@ -56,17 +60,17 @@ class NotificationChannelPerformance extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Sent',
+                    'label' => __('notifier::notifier.widgets.performance.sent'),
                     'data' => $sentData,
                     'backgroundColor' => $colors[0],
                 ],
                 [
-                    'label' => 'Opened',
+                    'label' => __('notifier::notifier.widgets.performance.opened'),
                     'data' => $openedData,
                     'backgroundColor' => $colors[1],
                 ],
                 [
-                    'label' => 'Clicked',
+                    'label' => __('notifier::notifier.widgets.performance.clicked'),
                     'data' => $clickedData,
                     'backgroundColor' => $colors[2],
                 ],
