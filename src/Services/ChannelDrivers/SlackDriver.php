@@ -10,7 +10,7 @@ class SlackDriver implements ChannelDriverInterface
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'slack')->first();
+            $channel = app(\Usamamuneerchaudhary\Notifier\Services\ChannelService::class)->getChannel('slack');
             
             if (!$channel || !isset($channel->settings['webhook_url'])) {
                 return false;

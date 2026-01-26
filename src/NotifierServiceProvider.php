@@ -26,6 +26,7 @@ use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 use Usamamuneerchaudhary\Notifier\Services\TenantService;
 use Usamamuneerchaudhary\Notifier\Services\UrlTrackingService;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotifierServiceProvider extends PackageServiceProvider
 {
@@ -118,8 +119,11 @@ class NotifierServiceProvider extends PackageServiceProvider
 
             // During boot, we register all active channels globally
             // The tenant scoping happens when channels are used at runtime
+            $enabledTypes = app(ChannelService::class)->getEnabledTypeKeys();
+            
             $channels = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::withoutGlobalScope('tenant')
                 ->where('is_active', true)
+                ->whereIn('type', $enabledTypes)
                 ->get();
 
             $driverFactory = new ChannelDriverFactory();

@@ -108,4 +108,37 @@ class ChannelService
             ->where('is_active', true)
             ->exists();
     }
+
+    /**
+     * Get all NotificationChannel records (active or inactive) filtered by enabled config types.
+     *
+     * @return Collection
+     */
+    public function getAllChannels(): Collection
+    {
+        $enabledTypes = $this->getEnabledTypeKeys();
+
+        if (empty($enabledTypes)) {
+            return new Collection();
+        }
+
+        return NotificationChannel::whereIn('type', $enabledTypes)
+            ->orderBy('title')
+            ->get();
+    }
+
+    /**
+     * Get a specific channel by type (if enabled in config).
+     *
+     * @param string $type
+     * @return ?NotificationChannel
+     */
+    public function getChannel(string $type): ?NotificationChannel
+    {
+        if (!$this->isTypeEnabled($type)) {
+            return null;
+        }
+
+        return NotificationChannel::where('type', $type)->first();
+    }
 }

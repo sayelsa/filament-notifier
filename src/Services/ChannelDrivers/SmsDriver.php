@@ -10,7 +10,7 @@ class SmsDriver implements ChannelDriverInterface
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'sms')->first();
+            $channel = app(\Usamamuneerchaudhary\Notifier\Services\ChannelService::class)->getChannel('sms');
 
             if (!$channel) {
                 return false;

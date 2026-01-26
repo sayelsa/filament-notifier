@@ -15,7 +15,8 @@ use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Usamamuneerchaudhary\Notifier\Filament\Widgets\NotificationStatsOverview;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel; // Keep for type hint
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotificationSettings extends Page
 {
@@ -40,7 +41,7 @@ class NotificationSettings extends Page
 
     public function mount(): void
     {
-        $channels = NotificationChannel::all();
+        $channels = app(ChannelService::class)->getAllChannels();
         $channelsData = [];
 
         foreach ($channels as $channel) {
@@ -84,7 +85,8 @@ class NotificationSettings extends Page
 
     public function form(Schema $schema): Schema
     {
-        $channels = NotificationChannel::all();
+        $channelService = app(ChannelService::class);
+        $channels = $channelService->getAllChannels();
         $tabs = [
             Tab::make(__('notifier::notifier.pages.settings.tabs.general'))
                 ->icon('heroicon-o-cog')
@@ -98,7 +100,7 @@ class NotificationSettings extends Page
                         ->required(),
                     Select::make('default_channel')
                         ->label(__('notifier::notifier.pages.settings.fields.default_channel'))
-                        ->options(NotificationChannel::pluck('title', 'type')->toArray())
+                        ->options($channelService->getAllChannels()->pluck('title', 'type')->toArray())
                         ->required(),
                 ]),
             Tab::make(__('notifier::notifier.pages.settings.tabs.preferences'))
@@ -113,7 +115,7 @@ class NotificationSettings extends Page
                             Select::make('preferences.default_channels')
                                 ->label(__('notifier::notifier.pages.settings.preferences.default_channels'))
                                 ->multiple()
-                                ->options(NotificationChannel::pluck('title', 'type')->toArray())
+                                ->options($channelService->getAllChannels()->pluck('title', 'type')->toArray())
                                 ->default(['email'])
                                 ->required(),
                             Toggle::make('preferences.allow_override')
@@ -323,7 +325,7 @@ class NotificationSettings extends Page
         // Save channel settings to channel records
         if (isset($settings['channels']) && is_array($settings['channels'])) {
             foreach ($settings['channels'] as $channelType => $channelData) {
-                $channel = NotificationChannel::where('type', $channelType)->first();
+                $channel = app(ChannelService::class)->getChannel($channelType);
 
                 if ($channel) {
                     $isActive = $channelData['enabled'] ?? false;

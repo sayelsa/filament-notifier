@@ -10,7 +10,7 @@ class DiscordDriver implements ChannelDriverInterface
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'discord')->first();
+            $channel = app(\Usamamuneerchaudhary\Notifier\Services\ChannelService::class)->getChannel('discord');
 
             if (!$channel || !isset($channel->settings['webhook_url'])) {
                 return false;

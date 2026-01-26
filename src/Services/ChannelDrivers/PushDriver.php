@@ -10,7 +10,7 @@ class PushDriver implements ChannelDriverInterface
     public function send(Notification $notification): bool
     {
         try {
-            $channel = \Usamamuneerchaudhary\Notifier\Models\NotificationChannel::where('type', 'push')->first();
+            $channel = app(\Usamamuneerchaudhary\Notifier\Services\ChannelService::class)->getChannel('push');
 
             if (!$channel || !isset($channel->settings['firebase_server_key'])) {
                 return false;

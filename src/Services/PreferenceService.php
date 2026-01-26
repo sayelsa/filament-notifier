@@ -3,9 +3,10 @@
 namespace Usamamuneerchaudhary\Notifier\Services;
 
 use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
-use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Models\NotificationChannel; // Keep for type hint
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class PreferenceService
 {
@@ -86,11 +87,10 @@ class PreferenceService
      */
     public function shouldSendToChannel($user, string $channelType, array $preferences): bool
     {
-        $channel = NotificationChannel::where('type', $channelType)
-            ->where('is_active', true)
-            ->first();
+        $channelService = app(ChannelService::class);
+        $channel = $channelService->getChannel($channelType);
 
-        if (!$channel) {
+        if (!$channel || !$channel->is_active) {
             return false;
         }
 

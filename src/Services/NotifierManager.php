@@ -10,6 +10,7 @@ use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Jobs\SendNotificationJob;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotifierManager
 {
@@ -80,11 +81,9 @@ class NotifierManager
                 return;
             }
 
-            $channel = NotificationChannel::where('type', $channelType)
-                ->where('is_active', true)
-                ->first();
+            $channel = app(ChannelService::class)->getChannel($channelType);
 
-            if (!$channel) {
+            if (!$channel || !$channel->is_active) {
                 Log::warning("Channel {$channelType} is not available or active");
                 return;
             }

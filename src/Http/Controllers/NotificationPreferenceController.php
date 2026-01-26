@@ -134,7 +134,8 @@ class NotificationPreferenceController extends Controller
         }
 
         $validatedChannels = $request->validated()['channels'];
-        $activeChannels = NotificationChannel::where('is_active', true)
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannels()
             ->pluck('type')
             ->toArray();
 
