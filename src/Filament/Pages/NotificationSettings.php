@@ -23,9 +23,13 @@ class NotificationSettings extends Page
     use InteractsWithForms;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 1;
     protected string $view = 'notifier::pages.settings';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
+    }
 
     public static function getNavigationLabel(): string
     {

@@ -29,7 +29,7 @@ class NotificationChannelResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Notifier';
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
     }
 
     

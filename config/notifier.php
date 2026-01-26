@@ -13,6 +13,7 @@ return [
         'queue' => env('NOTIFIER_QUEUE', 'default'),
         'timeout' => env('NOTIFIER_TIMEOUT', 30),
         'retries' => env('NOTIFIER_RETRIES', 3),
+        'navigation_group' => env('NOTIFIER_NAVIGATION_GROUP', 'Notifier'),
     ],
 
     /*

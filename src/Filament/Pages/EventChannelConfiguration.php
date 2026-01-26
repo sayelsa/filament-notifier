@@ -21,9 +21,13 @@ class EventChannelConfiguration extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier'; // Keeping group hardcoded "Notifier" as decided
     protected static ?int $navigationSort = 3;
     protected string $view = 'notifier::filament.pages.event-channel-configuration';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
+    }
 
     public static function getNavigationLabel(): string
     {

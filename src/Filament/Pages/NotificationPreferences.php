@@ -23,9 +23,13 @@ class NotificationPreferences extends Page implements HasForms
     use InteractsWithForms;
 
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-bell';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
     protected static ?int $navigationSort = 6;
     protected string $view = 'notifier::filament.pages.notification-preferences';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
+    }
 
     public static function getNavigationLabel(): string
     {

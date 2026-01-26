@@ -130,6 +130,10 @@ return [
         ],
     ],
     'pages' => [
+        'dashboard' => [
+            'navigation_label' => 'الرئيسية',
+            'title' => 'لوحة التحكم',
+        ],
         'event_channels' => [
             'navigation_label' => 'قنوات الأحداث',
             'title' => 'تكوين قنوات الأحداث',

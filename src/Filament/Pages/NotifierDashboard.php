@@ -13,11 +13,23 @@ use Usamamuneerchaudhary\Notifier\Filament\Widgets\RateLimitingStatusWidget;
 class NotifierDashboard extends Page
 {
     protected static string|null|\BackedEnum $navigationIcon = 'heroicon-o-chart-bar';
-    protected static string|null|\UnitEnum $navigationGroup = 'Notifier';
-    protected static ?string $title = 'Notifier Dashboard';
-    protected static ?string $navigationLabel = 'Dashboard';
     protected static ?int $navigationSort = 0;
     protected string $view = 'notifier::pages.dashboard';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('notifier::notifier.pages.dashboard.navigation_label');
+    }
+
+    public function getTitle(): string
+    {
+        return __('notifier::notifier.pages.dashboard.title');
+    }
 
 
     protected function getWidgets(): array

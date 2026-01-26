@@ -29,7 +29,7 @@ class NotificationTemplateResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Notifier';
+        return __(config('notifier.defaults.navigation_group', 'Notifier'));
     }
     
     // Use the 'tenant' relationship from HasTenant trait for Filament tenancy

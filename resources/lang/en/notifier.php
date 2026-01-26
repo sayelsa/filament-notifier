@@ -130,6 +130,10 @@ return [
         ],
     ],
     'pages' => [
+        'dashboard' => [
+            'navigation_label' => 'Dashboard',
+            'title' => 'Notifier Dashboard',
+        ],
         'event_channels' => [
             'navigation_label' => 'Event Channels',
             'title' => 'Event Channel Configuration',
