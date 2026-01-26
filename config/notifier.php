@@ -17,6 +17,43 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Available Channel Types
+    |--------------------------------------------------------------------------
+    |
+    | Define which notification channel types are available in your application.
+    | Set 'enabled' to false to hide a channel type from the admin panel.
+    | Only enabled channel types can be configured by admins.
+    |
+    */
+    'channels' => [
+        'email' => [
+            'enabled' => true,
+            'label' => 'Email - Send notifications via email',
+        ],
+        'slack' => [
+            'enabled' => true,
+            'label' => 'Slack - Send notifications to Slack workspace',
+        ],
+        'discord' => [
+            'enabled' => false,
+            'label' => 'Discord - Send notifications via webhook',
+        ],
+        'sms' => [
+            'enabled' => false,
+            'label' => 'SMS - Send text message notifications',
+        ],
+        'push' => [
+            'enabled' => false,
+            'label' => 'Push - Firebase FCM notifications',
+        ],
+        'database' => [
+            'enabled' => true,
+            'label' => 'Database - Store notifications in database',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Notification Events
     |--------------------------------------------------------------------------
     |

@@ -43,9 +43,8 @@ class PreferenceService
             $channels = $this->getDefaultPreferencesForEventKey($eventKey);
         }
 
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->pluck('type')
-            ->toArray();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannelTypes();
 
         foreach ($activeChannels as $channelType) {
             if (!isset($channels[$channelType])) {

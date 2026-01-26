@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class EventChannelConfiguration extends Page implements HasForms
@@ -38,9 +39,8 @@ class EventChannelConfiguration extends Page implements HasForms
         $eventService = app(EventService::class);
         $events = $eventService->grouped();
 
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->orderBy('title')
-            ->get();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannels();
 
         // Get current settings from database
         $currentSettings = EventChannelSetting::getAllSettings();
@@ -77,9 +77,8 @@ class EventChannelConfiguration extends Page implements HasForms
         $eventService = app(EventService::class);
         $events = $eventService->grouped();
 
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->orderBy('title')
-            ->get();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannels();
 
         $sections = [];
 
@@ -129,9 +128,8 @@ class EventChannelConfiguration extends Page implements HasForms
     public function save(): void
     {
         $data = $this->form->getState();
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->pluck('type')
-            ->toArray();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannelTypes();
 
         $eventService = app(EventService::class);
         $allEvents = $eventService->all();

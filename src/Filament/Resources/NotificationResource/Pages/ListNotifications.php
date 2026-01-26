@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Usamamuneerchaudhary\Notifier\Filament\Resources\NotificationResource;
 use Usamamuneerchaudhary\Notifier\Models\NotificationTemplate;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\NotifierManager;
 use Illuminate\Support\Facades\Log;
@@ -95,7 +96,8 @@ class ListNotifications extends ListRecords
                         ->label('Select Channels (if testing all)')
                         ->helperText('Select which channels to test. Only shown when "Test All Available Channels" is enabled.')
                         ->options(function () {
-                            return NotificationChannel::where('is_active', true)
+                            $channelService = app(ChannelService::class);
+                            return $channelService->getActiveChannels()
                                 ->pluck('title', 'type')
                                 ->toArray();
                         })
@@ -137,7 +139,8 @@ class ListNotifications extends ListRecords
                             $selectedChannels = $data['channels'] ?? [];
 
                             if (empty($selectedChannels)) {
-                                $allChannels = NotificationChannel::where('is_active', true)->pluck('type')->toArray();
+                                $channelService = app(ChannelService::class);
+                                $allChannels = $channelService->getActiveChannelTypes();
                                 $selectedChannels = $allChannels;
                             }
 

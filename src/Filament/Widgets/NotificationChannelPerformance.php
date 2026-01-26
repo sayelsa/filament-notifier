@@ -6,6 +6,7 @@ use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotificationChannelPerformance extends ChartWidget
 {
@@ -20,7 +21,7 @@ class NotificationChannelPerformance extends ChartWidget
 
     protected function getData(): array
     {
-        $channels = NotificationChannel::where('is_active', true)->get();
+        $channels = app(ChannelService::class)->getActiveChannels();
         $labels = [];
         $sentData = [];
         $openedData = [];

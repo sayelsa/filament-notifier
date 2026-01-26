@@ -6,6 +6,7 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Usamamuneerchaudhary\Notifier\Models\Notification;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 
 class NotificationStatsOverview extends BaseWidget
 {
@@ -22,7 +23,7 @@ class NotificationStatsOverview extends BaseWidget
         $sentNotifications = Notification::where('status', 'sent')->count();
         $pendingNotifications = Notification::where('status', 'pending')->count();
         $failedNotifications = Notification::where('status', 'failed')->count();
-        $activeChannels = NotificationChannel::where('is_active', true)->count();
+        $activeChannels = app(ChannelService::class)->getActiveChannels()->count();
 
         // Calculate success rate
         $successRate = $totalNotifications > 0 ? round(($sentNotifications / $totalNotifications) * 100, 1) : 0;

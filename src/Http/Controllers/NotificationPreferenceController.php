@@ -10,6 +10,7 @@ use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 use Usamamuneerchaudhary\Notifier\Services\EventService;
 use Usamamuneerchaudhary\Notifier\Services\PreferenceService;
 
@@ -66,9 +67,8 @@ class NotificationPreferenceController extends Controller
             })
             ->values();
 
-        $channels = NotificationChannel::where('is_active', true)
-            ->select('type', 'title', 'icon')
-            ->get()
+        $channelService = app(ChannelService::class);
+        $channels = $channelService->getActiveChannels()
             ->map(function ($channel) {
                 return [
                     'type' => $channel->type,

@@ -15,6 +15,7 @@ use Usamamuneerchaudhary\Notifier\Models\EventChannelSetting;
 use Usamamuneerchaudhary\Notifier\Models\NotificationChannel;
 use Usamamuneerchaudhary\Notifier\Models\NotificationPreference;
 use Usamamuneerchaudhary\Notifier\Models\NotificationSetting;
+use Usamamuneerchaudhary\Notifier\Services\ChannelService;
 use Usamamuneerchaudhary\Notifier\Services\EventService;
 
 class NotificationPreferences extends Page implements HasForms
@@ -36,9 +37,8 @@ class NotificationPreferences extends Page implements HasForms
         $eventService = app(EventService::class);
         $events = $eventService->grouped();
 
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->orderBy('title')
-            ->get();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannels();
 
         $formData = [];
 
@@ -73,9 +73,8 @@ class NotificationPreferences extends Page implements HasForms
         $eventService = app(EventService::class);
         $events = $eventService->grouped();
 
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->orderBy('title')
-            ->get();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannels();
 
         $sections = [];
 
@@ -156,9 +155,8 @@ class NotificationPreferences extends Page implements HasForms
 
         $data = $this->form->getState();
         $user = Auth::user();
-        $activeChannels = NotificationChannel::where('is_active', true)
-            ->pluck('type')
-            ->toArray();
+        $channelService = app(ChannelService::class);
+        $activeChannels = $channelService->getActiveChannelTypes();
 
         $eventService = app(EventService::class);
         $updated = 0;
