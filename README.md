@@ -565,6 +565,20 @@ The package creates the following database tables with the `notifier_` prefix to
 
 **Note:** These tables are separate from Laravel's built-in `notifications` table, which is used for database notifications. Our package provides a comprehensive notification management system that works alongside Laravel's native notification system.
 
+### Publishing Migrations
+
+To customize migrations (e.g., for UUID support, different indexes, or schema changes):
+
+```bash
+php artisan vendor:publish --tag=notifier-migrations
+```
+
+After publishing, edit the migration files in `database/migrations/` and run:
+
+```bash
+php artisan migrate
+```
+
 ## API Reference
 
 ### NotifierManager

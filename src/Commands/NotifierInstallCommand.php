@@ -20,6 +20,12 @@ class NotifierInstallCommand extends Command
             '--force' => $this->option('force'),
         ]);
 
+        // Publish migrations
+        $this->call('vendor:publish', [
+            '--tag' => 'notifier-migrations',
+            '--force' => $this->option('force'),
+        ]);
+
         // Run migrations
         $this->info('Running migrations...');
         $this->call('migrate');

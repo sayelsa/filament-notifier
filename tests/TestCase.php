@@ -10,6 +10,11 @@ abstract class TestCase extends Orchestra
 {
     use RefreshDatabase;
 
+    protected function defineDatabaseMigrations(): void
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+    }
+
     protected function getPackageProviders($app)
     {
         return [
