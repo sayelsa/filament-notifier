@@ -1,6 +1,5 @@
 {
     "name": "usamamuneerchaudhary/filament-notifier",
-    "version": "2.0",
     "description": "A powerful notification system for FilamentPHP that handles multi-channel notifications with template management, scheduling, and real-time delivery. Built for developers who need enterprise-grade notifications without the complexity.",
     "keywords": [
         "usamamuneerchaudhary",
