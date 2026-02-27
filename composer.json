@@ -26,11 +26,11 @@
     "require": {
         "php": "^8.2",
         "spatie/laravel-package-tools": "^1.19",
-        "filament/filament": "^4.0",
+        "filament/filament": "^4.0|^5.0",
         "symfony/mailer": "^7.2",
         "guzzlehttp/guzzle": "^7.9",
-        "illuminate/contracts": "*",
-        "illuminate/support": "*",
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0",
         "league/commonmark": "^2.6"
     },
     "autoload-dev": {

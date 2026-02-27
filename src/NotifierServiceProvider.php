@@ -38,7 +38,7 @@ class NotifierServiceProvider extends PackageServiceProvider
             ->name(static::$name)
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigrations()
+            ->discoversMigrations()
             ->hasCommands([
                 NotifierInstallCommand::class,
                 NotifierPublishCommand::class,
@@ -75,8 +75,6 @@ class NotifierServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'notifier');
 
         $this->registerChannelsFromDatabase();
